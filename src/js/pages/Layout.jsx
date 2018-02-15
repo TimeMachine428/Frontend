@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import Footer from "../components/layout/Footer";
-import Nav from "../components/layout/Nav";
+import Footer from "../components/layout/Footer.jsx";
+import Nav from "../components/layout/Nav.jsx";
 
 export default class Layout extends React.Component {
   render() {
