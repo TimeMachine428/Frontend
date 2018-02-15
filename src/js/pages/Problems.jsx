@@ -10,11 +10,11 @@ import List from "../components/ProblemList.jsx";
 export default class Problems extends React.Component {
     state = {
         Problems: [{
-            name: "Problem1",
+            title: "Problem1",
             author: "Bob",
             description: "Use a quick sort algorithm to sort an array of numbers",
             difficulty: 2,
-            good: 3,
+            rating: 3,
             id: 1
         }].map((problem, i) => <List key={i} problem={problem}/> )
     };
@@ -24,8 +24,12 @@ export default class Problems extends React.Component {
             .then(response => {
                 console.log(response);
                 const Problems = response.data.map((ent) => {
-                    ent["difficulty"] = null;
-                    ent["good"] = null;
+                    if (ent["difficulty"] === 0) {
+                        ent["difficulty"] = null;
+                    }
+                    if (ent["rating"] === 0) {
+                        ent["rating"] = null;
+                    }
                     return ent
                 }).map((problem, i) => <List key={i} problem={problem}/> );
                 this.setState({Problems})
@@ -49,7 +53,7 @@ export default class Problems extends React.Component {
         //         author: "Billy Joel",
         //         description: "its fast",
         //         difficulty: null,
-        //         good: null,
+        //         rating: null,
         //         id: 1
         //     },
         //     {
@@ -57,7 +61,7 @@ export default class Problems extends React.Component {
         //         author: "Scooby Doo",
         //         description: "its quick",
         //         difficulty: null,
-        //         good: null,
+        //         rating: null,
         //         id: 2
         //     },
         //     {
@@ -65,7 +69,7 @@ export default class Problems extends React.Component {
         //         author: "X",
         //         description: "its rad",
         //         difficulty: null,
-        //         good: null,
+        //         rating: null,
         //         id: 3
         //     },
         //     {
@@ -73,7 +77,7 @@ export default class Problems extends React.Component {
         //         author: "Y",
         //         description: "its slow",
         //         difficulty: null,
-        //         good: null,
+        //         rating: null,
         //         id :4
         //     }
         // ].map((problem, i) => <List key={i} problem={problem}/> );
