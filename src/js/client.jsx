@@ -19,7 +19,7 @@ ReactDOM.render(
       <Route path="settings" name="settings" component={Settings} />
       <Route path="help" name="help" component={Help} />
         <Route path="solutions(/:testvalue)" name="solutions" component={Solutions}/>
-        <Route path="createProblem" name="createProblem" component={CreateProblem}/>
+        <Route path="createProblem(/:testvalue)" name="createProblem" component={CreateProblem}/>
     </Route>
   </Router>,
   app

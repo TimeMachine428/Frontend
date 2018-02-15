@@ -1,7 +1,7 @@
 import React from "react"
 import ReactStars from "react-stars"
 import { Link } from "react-router";
-import ReactModal from 'react-modal';
+import ReactModal from "react-modal";
 import Textarea from "react-textarea-autosize";
 
 
@@ -99,7 +99,7 @@ export default class ProblemList extends React.Component{
                     <button onClick={this.handleCloseModal}>Close</button>
                     <h1>Leave a comment (optional)</h1>
                     <Textarea style = {{width:400, height: 300}} onChange={this.handleChange}/>
-                    <a class="btn -btn-default" onClick={this.handleSubmit}>Submit</a>
+                    <a className="btn -btn-default" onClick={this.handleSubmit}>Submit</a>
                 </ReactModal>
             </div>
         );
