@@ -1,18 +1,140 @@
 import React from "react";
 import { IndexLink, Link } from "react-router";
 import PropTypes from "prop-types";
+import ReactModal from "react-modal"
+import Problems from "./../../pages/Problems.jsx";
 
 export default class Nav extends React.Component {
   constructor() {
-    super()
+    super();
     this.state = {
       collapsed: true,
+      showModal: false,
+      showAlert: false,
+      username: "",
+      password: "",
+      isLoggedIn: this.getInitialState()
     };
+    this.onFailLogin = this.onFailLogin.bind(this);
+    this.handleChangeUser = this.handleChangeUser.bind(this);
+    this.handleChangePass = this.handleChangePass.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleOpenModal = this.handleOpenModal.bind(this);
+    this.handleOpenCheckModal = this.handleOpenCheckModal.bind(this);
+    this.handleCloseModal = this.handleCloseModal.bind(this);
+    this.handleCloseCheckModal = this.handleCloseCheckModal.bind(this);
+    this.logout = this.logout.bind(this);
+
+    this.onUnload = this.onUnload.bind(this);
   }
 
+  getInitialState() {
+    if(localStorage.getItem( "loginInfo" ))  {
+
+      if(localStorage.getItem("time")) {
+        const time = parseInt(localStorage.getItem("time"));
+        if((new Date().getTime() - time) > 1000*30) {  //1000 ms = 1s, 60s = 1, 60min = 1hour...
+          localStorage.setItem("userLogged", "");
+          return false
+        }
+      }
+      return localStorage.getItem("loginInfo");
+    } else {
+      localStorage.setItem("userLogged", "");
+      return false;
+    }
+  }
   toggleCollapse() {
     const collapsed = !this.state.collapsed;
     this.setState({collapsed});
+  }
+
+  onSuccessLogin(user) {
+    //display username somewhere
+    alert("login successful");
+    localStorage.setItem("loginInfo", "true");
+    localStorage.setItem("userLogged", user);
+    this.setState({isLoggedIn: true});
+    this.handleCloseModal();
+    this.setState({username: "", password: ""});
+    setTimeout(function () { window.location.reload(true); }, 0);
+  }
+
+  onFailLogin() {
+    alert("login failed, please try again");
+  }
+
+  handleChangeUser(event) {
+    this.setState({username: event.target.value});
+  }
+
+  handleChangePass(event) {
+    this.setState({password: event.target.value});
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+    if(this.state.username === "") {
+      alert("Username Required")
+    } else if(this.state.password === "") {
+      alert("Password Required")
+    } else {
+      //insert backend call here
+      //timeout waiting for callback
+      this.onSuccessLogin(this.state.username);    //username to be changed to the userid
+      alert(this.state.username + this.state.password);
+    }
+  }
+
+  handleOpenModal () {
+    this.setState({ showModal: true });
+    this.handleCloseCheckModal();
+  }
+
+
+  handleOpenCheckModal() {
+      const test = this.props.location.pathname.toString();
+      if((test !== "/problems" && test !== "/settings") && test !== "/myProblems") {
+        this.handleCloseCheckModal();
+      } else {
+        this.setState({showAlert: true});
+      }
+  }
+
+  handleCloseModal () {
+    this.setState({ showModal: false });
+
+    if(this.props.location.pathname === ("/problems" || "/settings" || "/myProblems")) {
+      if (!this.state.isLoggedIn) {
+        this.handleOpenCheckModal();
+      }
+    }
+    this.setState({username: "", password: ""});
+  }
+
+  handleCloseCheckModal () {
+    this.setState( {showAlert: false});
+  }
+
+  logout() {
+    localStorage.removeItem("loginInfo");
+    localStorage.removeItem("userLogged");
+    alert("logout successful");
+    this.setState({isLoggedIn: false});
+    location.href = "http://localhost:8080";
+  }
+
+  onUnload() {
+    const date = new Date();
+    const time = (date.getTime()).toString()
+    localStorage.setItem("time", time);
+  }
+
+  componentDidMount() {
+    window.addEventListener("beforeunload", this.onUnload);
+  }
+  componentWillUnmount() {
+    window.removeEventListener("beforeunload", this.onUnload);
   }
 
   render() {
@@ -21,6 +143,7 @@ export default class Nav extends React.Component {
     const featuredClass = location.pathname === "/" ? "active" : "";
     const helpClass = location.pathname.match(/^\/help/) ? "active" : "";
     const problemsClass = location.pathname.match(/^\/problems/) ? "active" : "";
+    const myProblemsClass = location.pathname.match(/^\/myProblems/) ? "active" : "";
     const settingsClass = location.pathname.match(/^\/settings/) ? "active" : "";
     const navClass = collapsed ? "collapse" : "";
 
@@ -33,39 +156,87 @@ export default class Nav extends React.Component {
               <span className="icon-bar"></span>
               <span className="icon-bar"></span>
               <span className="icon-bar"></span>
+              <span className="icon-bar"></span>
             </button>
           </div>
           <div className={"navbar-collapse " + navClass} id="bs-example-navbar-collapse-1">
             <ul className="nav navbar-nav">
               <li className={featuredClass}>
-                <IndexLink to="/" onClick={this.toggleCollapse.bind(this)}>Home</IndexLink>
+                <IndexLink to={{pathname: "/", state:{login: this.state.isLoggedIn}}} onClick={this.toggleCollapse.bind(this)}>Home</IndexLink>
               </li>
               <li className={problemsClass}>
-                <Link to="problems" onClick={this.toggleCollapse.bind(this)}>Problems</Link>
+                <Link to={{pathname: "problems", state:{login: this.state.isLoggedIn}}} onClick={this.toggleCollapse.bind(this)}>Problems</Link>
+              </li>
+              <li className={myProblemsClass}>
+                <Link to={{pathname: "myProblems", state:{login: this.state.isLoggedIn}}} onClick={this.toggleCollapse.bind(this)}>My Problems</Link>
               </li>
               <li className={settingsClass}>
-                <Link to="settings" onClick={this.toggleCollapse.bind(this)}>Settings</Link>
+                <Link to={{pathname: "settings", state:{login: this.state.isLoggedIn}}} onClick={this.toggleCollapse.bind(this)}>Settings</Link>
               </li>
               <li className={helpClass}>
                 <Link to="help" onClick={this.toggleCollapse.bind(this)}>Help</Link>
               </li>
             </ul>
+            <a  className="btn -btn-default" onClick={this.handleOpenModal}>Login</a>
+            <a className="btn -btn-default" onClick={this.logout}>Logout</a>
           </div>
-        </div>
-      </nav>
-    );
-  }
+          <div>
+            <ReactModal
+              style={{
+                overlay:{
+                  left: "0%",
+                  right: "25%",
+                  top: "90px",
+                  height: "600px",
+                  width: "1200px"
+                }
+              }}
+              isOpen={this.state.showModal}
+              contentLabel="Minimal Modal Example">
+              <button onClick={this.handleCloseModal}>&#9587;</button>
+              <h1>Login</h1>
+                <form onSubmit={this.handleSubmit}>
+                  <label>
+                    Username: <input type="text" onChange={this.handleChangeUser}/>
+                  </label>
+                  <label>
+                    Password: <input type="password" onChange={this.handleChangePass}/>
+                  </label>
+                </form>
+                <a className="btn -btn-action" onClick={this.handleSubmit}>Submit</a>
+                <a className="btn -btn-action" >Create New Account?</a>
+            </ReactModal>
+            <ReactModal
+              style={{
+                overlay:{
+                  left: "0%",
+                  right: "25%",
+                  top: "90px",
+                  height: "600px",
+                  width: "1200px"
+                }
+              }}
+              isOpen={!this.state.isLoggedIn && !this.state.showModal && (this.props.location.pathname.toString() === ("/problems")
+                  ||this.props.location.pathname.toString() === ("/settings") ||this.props.location.pathname.toString() === ("/myProblems"))}
+              contentLabel="Minimal Modal Example">
+              <h1>Please Login To View This Page</h1>
+            </ReactModal>
+          </div>
+      </div>
+    </nav>
+  );
+}
 }
 
 
 Nav.propTypes = {
-  location: PropTypes.shape({
-    pathname: PropTypes.string.isRequired,
-  }),
+    location: PropTypes.shape({
+        pathname: PropTypes.string.isRequired,
+    }),
 };
 
 Nav.defaultProps = {
-  location: {
-    pathname: "",
-  },
+    location: {
+        pathname: "",
+    },
 };

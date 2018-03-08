@@ -1,6 +1,7 @@
 import React from "react";
 import axios from "axios";
 import { IndexLink, Link } from "react-router";
+import ReactModal from "react-modal"
 
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 axios.defaults.xsrfCookieName = "csrftoken";
@@ -8,7 +9,9 @@ axios.defaults.xsrfCookieName = "csrftoken";
 import List from "../components/ProblemList.jsx";
 
 export default class Problems extends React.Component {
+    login = this.props.location.state.login;
     state = {
+        showModal: false,
         Problems: [{
             title: "Problem1",
             author: "Bob",
@@ -18,7 +21,7 @@ export default class Problems extends React.Component {
             id: 1
         }].map((problem, i) => <List key={i} problem={problem}/> )
     };
-
+    
     componentDidMount() {
         axios.get("http://localhost:80/restapi/problem/")
             .then(response => {
@@ -82,15 +85,15 @@ export default class Problems extends React.Component {
         //     }
         // ].map((problem, i) => <List key={i} problem={problem}/> );
 
-
         return (
             <div>
                 <h1>Problems</h1>
                 <div class="row">{this.state.Problems}</div>
                 <a style={{align: "top-right"}} className={createProblemClass}>
                     <Link  class="btn btn-default"  to={{pathname: '/createProblem', state:{ testvalue: params}}} >Create New Problem</Link>
-
                 </a>
+                <button>{localStorage.getItem("userLogged").toString()}</button>
+                <button>{this.login.toString()}</button>
             </div>
         );
     }

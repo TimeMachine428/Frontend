@@ -7,7 +7,6 @@ import axios from "axios";
 
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 axios.defaults.xsrfCookieName = "csrftoken";
-
 export default class ProblemList extends React.Component{
 
     constructor () {
@@ -137,6 +136,7 @@ export default class ProblemList extends React.Component{
                 <p id = "rev">reviews: </p>
                 <ReactStars count={5} value={this.state.rating} onChange = {(e) => this.handleRating(e, problem)} size={24} half={false} color2={"#fffe2b"}/>
                 <a  className={solutionsClass}>
+                
                     <Link className="btn btn-success" to={{pathname: "/solutions", state:{ testvalue: problem}}}  >Solve</Link>
                 </a>
                 <ReactModal

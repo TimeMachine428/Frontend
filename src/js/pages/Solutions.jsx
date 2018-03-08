@@ -2,8 +2,6 @@ import React from "react"
 import Textarea from "react-textarea-autosize";
 
 export default class Solutions extends React.Component {
-
-    problem = [];
     problem = this.props.location.state.testvalue;
 
     constructor(props) {
@@ -20,10 +18,10 @@ export default class Solutions extends React.Component {
         this.setState({value: event.target.value});
     }
 
-    onFeedback1(event) {
+    onFeedback1() {
         alert("Good Job! you Completed the Problem");
     }
-    onFeedback2(event) {
+    onFeedback2() {
         alert("Please Try Again");
     }
     handleSubmit(event) {
@@ -32,12 +30,14 @@ export default class Solutions extends React.Component {
         }else {
             alert(this.state.value);
             //backend code
+            //author of submission can be accessed via
+            // localStorage.getItem("userLogged") which
+            //returns user currently logged in
         }
         event.preventDefault();
     }
 
     render() {
-        const {id} = "fail"
         return(
             <div>
               <h1>{this.problem.name}</h1>

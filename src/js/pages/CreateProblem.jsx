@@ -29,9 +29,7 @@ export default class CreateProblem extends React.Component {
 
     handleChange1(event) {
         this.setState({field1: event.target.value});
-
         console.log(this.state);
-
     }
 
     handleChange2(event) {
@@ -59,6 +57,7 @@ export default class CreateProblem extends React.Component {
         if (this.state.field1 == "" || this.state.field2 == "" || this.state.field3 == "" || this.state.field4 == "" || this.state.field5 == "") {
             alert("Please Fill All Fields")
         } else {
+            alert("Problem has been created")
             event.preventDefault();
             var jsonpayload = {
                 "title": this.state.field1,
@@ -66,7 +65,7 @@ export default class CreateProblem extends React.Component {
                 "difficulty": this.state.field3,
                 "description": this.state.field4,
                 "solution": this.state.field5,
-                "author": "me",
+                "author": localStorage.getItem("userLogged"),
                 "rating": 0
             }
             axios.post("http://localhost:80/restapi/problem/", jsonpayload)
@@ -77,7 +76,7 @@ export default class CreateProblem extends React.Component {
                     console.log(error);
                 })
 
-            alert(this.state.field3);
+            //alert(this.state.field3);
         }
     }
         render()
