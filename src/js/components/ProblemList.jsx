@@ -3,9 +3,10 @@ import ReactStars from "react-stars"
 import { Link } from "react-router";
 import ReactModal from "react-modal";
 import Textarea from "react-textarea-autosize";
-import axios from "axios/index";
+import axios from "axios";
 
-
+axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+axios.defaults.xsrfCookieName = "csrftoken";
 
 export default class ProblemList extends React.Component{
 
@@ -76,6 +77,8 @@ export default class ProblemList extends React.Component{
             "author": problem.author,
             "rating": problem.rating
         }
+
+        // console.log(JSON.stringify(jsonpayload))
 
         axios.put("http://localhost:80/restapi/problem/" + problem.id + "/", jsonpayload)
             .then(response => {
