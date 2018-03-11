@@ -47,7 +47,7 @@ export default class ProblemList extends React.Component{
     }
 
     getDifficulty(problemID){
-        axios.get("http://localhost:80/restapi/problem/" + problemID + "/")
+        axios.get("http://localhost:80/restapi/problems/" + problemID + "/")
             .then(response => {
                 this.setState({difficulty:response.data["difficulty"]})
             })
@@ -57,7 +57,7 @@ export default class ProblemList extends React.Component{
     }
 
     getRating(problemID){
-        axios.get("http://localhost:80/restapi/problem/" + problemID + "/")
+        axios.get("http://localhost:80/restapi/problems/" + problemID + "/")
             .then(response => {
                 this.setState({rating:response.data["rating"]})
             })
@@ -68,18 +68,12 @@ export default class ProblemList extends React.Component{
 
     setDifficulty(newDifficulty, problem){
         let jsonpayload = {
-            "title":problem.title,
-            "programming_language": problem.programming_language,
-            "difficulty": newDifficulty,
-            "description": problem.description,
-            "solution": problem.solution,
-            "author": problem.author,
-            "rating": problem.rating
+            "difficulty": newDifficulty
         }
 
         // console.log(JSON.stringify(jsonpayload))
 
-        axios.put("http://localhost:80/restapi/problem/" + problem.id + "/", jsonpayload)
+        axios.patch("http://localhost:80/restapi/problems/" + problem.id + "/", jsonpayload)
             .then(response => {
                 console.log(response)
                 // return response.data["difficulty"]
@@ -101,7 +95,7 @@ export default class ProblemList extends React.Component{
             "rating": newRating
         }
 
-        axios.put("http://localhost:80/restapi/problem/" + problem.id + "/", jsonpayload)
+        axios.put("http://localhost:80/restapi/problems/" + problem.id + "/", jsonpayload)
             .then(response => {
                 console.log(response)
                 // return response.data["difficulty"]
@@ -120,7 +114,9 @@ export default class ProblemList extends React.Component{
     }
 
     render() {
-        const{ problem } = this.props;
+        const { problem } = this.props;
+
+        console.log(problem)
 
         const solutionsClass = location.pathname.match(/^\/solutions/) ? "active" : "";
 
@@ -128,13 +124,13 @@ export default class ProblemList extends React.Component{
             <div className="col-md-4">
                 <h4>{problem.title}</h4>
                 <p>
-                    by: {problem.author} <br/>
+                    by: {problem.author.username} <br/>
                     {problem.description} <br/>
                 </p>
                 <p id = "diff">difficulty: </p>
-                <ReactStars count={5} value={this.state.difficulty} onChange = {(e) => this.setDifficulty(e, problem)} size={24} half={false} color2={"#fffe2b"}/>
+                <ReactStars count={5} value={problem.difficulty} onChange = {this.setDiffRating} size={24} half={false} color2={"#fffe2b"}/>
                 <p id = "rev">reviews: </p>
-                <ReactStars count={5} value={this.state.rating} onChange = {(e) => this.handleRating(e, problem)} size={24} half={false} color2={"#fffe2b"}/>
+                <ReactStars count={5} value={problem.rating} onChange = {this.handleRating} size={24} half={false} color2={"#fffe2b"}/>
                 <a  className={solutionsClass}>
                 
                     <Link className="btn btn-success" to={{pathname: "/solutions", state:{ testvalue: problem}}}  >Solve</Link>
