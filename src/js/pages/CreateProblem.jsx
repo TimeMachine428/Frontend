@@ -68,7 +68,7 @@ export default class CreateProblem extends React.Component {
                 "author": localStorage.getItem("userLogged"),
                 "rating": 0
             }
-            axios.post("http://localhost:80/restapi/problem/", jsonpayload)
+            axios.post("http://localhost:80/restapi/problems/", jsonpayload)
                 .then(response => {
                     console.log(response);
                 })

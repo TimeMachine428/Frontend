@@ -57,7 +57,7 @@ export default class CreateAccount extends React.Component {
                 "email": this.state.email,
                 "password": this.state.password,             
             }
-            axios.post("http://localhost:80/restapi/problem/", jsonpayload) //need change to proper backend call
+            axios.post("http://localhost:80/restapi/problems/", jsonpayload) //need change to proper backend call
                 .then(response => {
                     console.log(response);
                 })
