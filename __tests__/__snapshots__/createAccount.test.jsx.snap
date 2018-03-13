@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CreateAccount page information correct 1`] = `
+<div>
+  <h2>
+     Sign up with your email address 
+  </h2>
+  <form>
+    <p>
+      Email address
+    </p>
+    <p>
+      <input
+        onChange={[Function]}
+        type="text"
+      />
+    </p>
+    <p>
+      Password
+    </p>
+    <p>
+      <input
+        onChange={[Function]}
+        type="password"
+      />
+    </p>
+    <a
+      className="btn btn-success"
+      onClick={[Function]}
+    >
+      Sign up
+    </a>
+  </form>
+</div>
+`;
