@@ -131,7 +131,7 @@ export default class ProblemList extends React.Component{
     render() {
         const { problem } = this.props;
 
-        console.log(problem)
+        console.log(problem.author.username)
 
         const solutionsClass = location.pathname.match(/^\/solutions/) ? "active" : "";
 

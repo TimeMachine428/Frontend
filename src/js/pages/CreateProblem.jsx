@@ -61,14 +61,18 @@ export default class CreateProblem extends React.Component {
             event.preventDefault();
             var jsonpayload = {
                 "title": this.state.field1,
-                "programming_language": this.state.field2,
+                // "programming_language": this.state.field2,
                 "difficulty": this.state.field3,
                 "description": this.state.field4,
-                "solution": this.state.field5,
-                "author": localStorage.getItem("userLogged"),
-                "rating": 0
+                // "solution": this.state.field5,
+                // "rating": 0
             }
-            axios.post("http://localhost:80/restapi/problem/", jsonpayload)
+
+            console.log(localStorage.getItem("JWT-token"))
+            var config = {
+                headers: {Authorization: "JWT " + localStorage.getItem("JWT-token")}
+            }
+            axios.post("http://localhost:80/restapi/problems/", jsonpayload, config)
                 .then(response => {
                     console.log(response);
                 })
