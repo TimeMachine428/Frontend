@@ -113,6 +113,21 @@ export default class ProblemList extends React.Component{
         // this.getRating(problem.id)
     }
 
+    deleteProblem(problem){
+        console.log('remove' + problem.name);
+        if(console.log !== ""){
+            //alert("Are you sure you want to delete this problem?")
+            var c = confirm("Are you sure you want to delete this problem?")
+            if(c==true)
+            alert("deleted")
+            else
+            alert("cancelled")
+
+        }
+    }
+
+
+
     render() {
         const { problem } = this.props;
 
@@ -134,7 +149,17 @@ export default class ProblemList extends React.Component{
                 <a  className={solutionsClass}>
                 
                     <Link className="btn btn-success" to={{pathname: "/solutions", state:{ testvalue: problem}}}  >Solve</Link>
+                    <button onClick={(e)=> this.deleteProblem(problem)} type="button" className="btn btn-default btn-sm">
+                        Delete
+                    </button>
+
+
+
+
+
                 </a>
+
+
                 <ReactModal
                     style={{
                         overlay:{
