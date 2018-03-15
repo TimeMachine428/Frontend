@@ -21,7 +21,6 @@ export default class Nav extends React.Component {
         this.handleChangeUser = this.handleChangeUser.bind(this);
         this.handleChangePass = this.handleChangePass.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleNewAccount = this.handleNewAccount.bind(this)
         this.handleOpenModal = this.handleOpenModal.bind(this);
         this.handleOpenCheckModal = this.handleOpenCheckModal.bind(this);
         this.handleCloseModal = this.handleCloseModal.bind(this);
@@ -46,11 +45,9 @@ export default class Nav extends React.Component {
             localStorage.setItem("userLogged", "");
             return false;
         }
-// TODO
     }
     toggleCollapse() {
-        const collapsed = !this.state.collapsed;
-        this.setState({collapsed});
+        this.setState({collapsed: !this.state.collapsed});
     }
 
     handleChangeUser(event) {
@@ -95,6 +92,7 @@ export default class Nav extends React.Component {
                         // alert(this.state.username + this.state.password);
                         this.setState({token: response.data.token})
                         localStorage.setItem("JWT-token", response.data.token)
+                        location.href = "http://localhost:8080";
                     }
                     else {
                         this.onFailLogin()
@@ -108,49 +106,6 @@ export default class Nav extends React.Component {
         }
     }
 
-    onSuccessCreateAccount(user) {
-        alert("account creation successful");
-        this.onSuccessLogin(user)
-    }
-
-    onFailCreateAccount() {
-        alert("account creation failed please use an other username or password");
-    }
-
-    handleNewAccount(event) {
-        event.preventDefault();
-        if(this.state.username === "") {
-            alert("Username Required")
-        } else if(this.state.password === "") {
-            alert("Password Required")
-        } else {
-            //insert backend call here
-            //timeout waiting for callback
-            let payload = {"username": this.state.username,
-                "password":this.state.password}
-            axios.post("http://localhost:80/restapi/users/", payload)
-                .then(response => {
-                    console.log(response.data);
-                    if (response.data != []) {
-                        axios.post("http://localhost:80/api-token-auth/", payload)
-                            .then(response => {
-                                localStorage.setItem("JWT-token", response.data.token)
-                            })
-                            .catch(err => {
-                                console.log(err)
-                            })
-                        this.onSuccessCreateAccount(this.state.username);    //username to be changed to the userid
-                    }
-                    else {
-                        this.onFailCreateAccount()
-                    }
-                })
-                .catch(function (error) {
-                    console.log(error);
-                    this.onFailCreateAccount()
-                })
-        }
-    }
 
     handleOpenModal () {
         this.setState({ showModal: true });
@@ -270,7 +225,7 @@ export default class Nav extends React.Component {
                                 </label>
                             </form>
                             <a className="btn -btn-action" onClick={this.handleSubmit}>Submit</a>
-                            <a className="btn -btn-action" onClick={this.handleNewAccount}>Create New Account?</a>
+                            <Link className="btn -btn-action" to="createAccount" onClick={this.handleCloseModal}>Create New Account?</Link>
                         </ReactModal>
                         <ReactModal
                             style={{

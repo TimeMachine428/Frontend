@@ -78,7 +78,7 @@ export default class CreateProblem extends React.Component {
                 .then(response => {
                     console.log(response);
                     // const history = createHashHistory()
-                    // history.push('/problems')
+                    // location.href = "http://localhost:8080/#/problems/"
                     // this.setState({redirect: <Link to={{pathname: "problems", state:{login: this.state.isLoggedIn}}}></Link>})
                 })
                 .catch(error => {
