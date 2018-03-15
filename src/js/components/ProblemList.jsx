@@ -39,10 +39,27 @@ export default class ProblemList extends React.Component{
         this.setState({value: event.target.value});
     }
 
-    handleSubmit(event) {
+    handleSubmit(event, problem) {
         event.preventDefault();
         this.handleCloseModal();
-        //insert backend call here
+
+        let jsonpayload = {
+            "rating": this.state.rating
+        }
+
+        var config = {
+            headers: {Authorization: "JWT " + localStorage.getItem("JWT-token")}
+        }
+        axios.patch("http://localhost:80/restapi/problems/" + problem.id + "/", jsonpayload, config)
+            .then(response => {
+                console.log(response)
+                setTimeout(function () { window.location.reload(true); }, 0);
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+
+
         this.setState({value: ""});
     }
 
@@ -66,16 +83,18 @@ export default class ProblemList extends React.Component{
             })
     }
 
-    setDifficulty(newDifficulty, problem){
+    handleDifficulty(newDifficulty, problem){
         let jsonpayload = {
             "difficulty": newDifficulty
         }
 
-        // console.log(JSON.stringify(jsonpayload))
-
-        axios.patch("http://localhost:80/restapi/problems/" + problem.id + "/", jsonpayload)
+        var config = {
+            headers: {Authorization: "JWT " + localStorage.getItem("JWT-token")}
+        }
+        axios.patch("http://localhost:80/restapi/problems/" + problem.id + "/", jsonpayload, config)
             .then(response => {
                 console.log(response)
+                // setTimeout(function () { window.location.reload(true); }, 0);
                 // return response.data["difficulty"]
             })
             .catch(function (error) {
@@ -83,27 +102,8 @@ export default class ProblemList extends React.Component{
             })
     }
 
-    handleRating(newRating, problem){
-        this.setState({rating: event});
-        let jsonpayload = {
-            "title":problem.title,
-            "programming_language": problem.programming_language,
-            "difficulty": problem.difficulty,
-            "description": problem.description,
-            "solution": problem.solution,
-            "author": problem.author,
-            "rating": newRating
-        }
-
-        axios.put("http://localhost:80/restapi/problems/" + problem.id + "/", jsonpayload)
-            .then(response => {
-                console.log(response)
-                // return response.data["difficulty"]
-            })
-            .catch(function (error) {
-                console.log(error);
-            })
-
+    handleRating(newRating){
+        this.setState({rating: newRating});
         this.handleOpenModal();
 
     }
@@ -114,26 +114,43 @@ export default class ProblemList extends React.Component{
     }
 
     deleteProblem(problem){
-        console.log('remove' + problem.name);
+        console.log("remove" + problem.name);
         if(console.log !== ""){
             //alert("Are you sure you want to delete this problem?")
             var c = confirm("Are you sure you want to delete this problem?")
-            if(c==true)
-            alert("deleted")
-            else
-            alert("cancelled")
+            if(c==true) {
+                alert("deleted")
+                var config = {
+                    headers: {Authorization: "JWT " + localStorage.getItem("JWT-token")}
+                }
+                axios.delete("http://localhost:80/restapi/problems/" + problem.id + "/", config)
+                    .then(response => {
+                        console.log(response);
+                        setTimeout(function () { window.location.reload(true); }, 0);
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    })
+            }
+            else{
+                alert("cancelled")
+            }
+
 
         }
     }
 
 
-
     render() {
+        const solutionsClass = location.pathname.match(/^\/solutions/) ? "active" : "";
+
         const { problem } = this.props;
 
-        console.log(problem.author.username)
+        let deletebtn = null
 
-        const solutionsClass = location.pathname.match(/^\/solutions/) ? "active" : "";
+        if(true) {
+            deletebtn = <button onClick={(e)=> this.deleteProblem(problem)} type="button" className="btn btn-default btn-sm">Delete</button>
+        }
 
         return (
             <div className="col-md-4">
@@ -143,20 +160,12 @@ export default class ProblemList extends React.Component{
                     {problem.description} <br/>
                 </p>
                 <p id = "diff">difficulty: </p>
-                <ReactStars count={5} value={problem.difficulty} onChange = {this.setDiffRating} size={24} half={false} color2={"#fffe2b"}/>
+                <ReactStars count={5} value={problem.difficulty} onChange = {(newValue) => {this.handleDifficulty(newValue, problem)}} size={24} half={false} color2={"#fffe2b"}/>
                 <p id = "rev">reviews: </p>
-                <ReactStars count={5} value={problem.rating} onChange = {this.handleRating} size={24} half={false} color2={"#fffe2b"}/>
+                <ReactStars count={5} value={problem.rating} onChange = {(newValue) => {this.handleRating(newValue)}} size={24} half={false} color2={"#fffe2b"}/>
                 <a  className={solutionsClass}>
-                
                     <Link className="btn btn-success" to={{pathname: "/solutions", state:{ testvalue: problem}}}  >Solve</Link>
-                    <button onClick={(e)=> this.deleteProblem(problem)} type="button" className="btn btn-default btn-sm">
-                        Delete
-                    </button>
-
-
-
-
-
+                    {deletebtn}
                 </a>
 
 
@@ -175,7 +184,7 @@ export default class ProblemList extends React.Component{
                     <button onClick={this.handleCloseModal}>Close</button>
                     <h1>Leave a comment (optional)</h1>
                     <Textarea style = {{width:400, height: 300}} onChange={this.handleChange}/>
-                    <a className="btn -btn-default" onClick={this.handleSubmit}>Submit</a>
+                    <a className="btn -btn-default" onClick={(e) => {this.handleSubmit(e, problem)}}>Submit</a>
                 </ReactModal>
             </div>
         );

@@ -1,10 +1,12 @@
 import React from "react"
 import Textarea from "react-textarea-autosize"
+import { Link } from 'react-router'
 import axios from "axios/index";
+import { createHashHistory } from 'history'
 
 export default class CreateProblem extends React.Component {
-    problem = this.props;
 
+    problem = this.props;
 
     constructor(props) {
         super(props);
@@ -15,8 +17,8 @@ export default class CreateProblem extends React.Component {
             field2: '',
             field3:'',
             field4: '',
-            field5:''
-
+            field5:'',
+            redirect: null
         };
         this.handleChange1 = this.handleChange1.bind(this);
         this.handleChange2 = this.handleChange2.bind(this);
@@ -75,6 +77,9 @@ export default class CreateProblem extends React.Component {
             axios.post("http://localhost:80/restapi/problems/", jsonpayload, config)
                 .then(response => {
                     console.log(response);
+                    // const history = createHashHistory()
+                    // history.push('/problems')
+                    // this.setState({redirect: <Link to={{pathname: "problems", state:{login: this.state.isLoggedIn}}}></Link>})
                 })
                 .catch(error => {
                     console.log(error);
@@ -102,6 +107,7 @@ export default class CreateProblem extends React.Component {
                         <p>Enter your solution to the problem</p>
                         <p><Textarea style={{width: 300, height: 300}} onChange={this.handleChange5}/></p>
                         <a class="btn btn-default" onClick={this.handleSubmit}>Submit</a>
+                        {/*{this.state.redirect}*/}
                         <h1>{this.problem.name}</h1>
                         <p>{this.problem.description}</p>
                     </form>

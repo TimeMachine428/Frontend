@@ -1,18 +1,11 @@
 import React from "react";
-
 import axios from "axios";
-
+import { Router } from "react-router";
+import Select from "react-select";
+import List from "../components/ProblemList.jsx";
 
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 axios.defaults.xsrfCookieName = "csrftoken";
-import Select from "react-select";
-
-import List from "../components/ProblemList.jsx";
-
-
-
-
-
 
 export default class MyProblems extends React.Component {
 
@@ -155,7 +148,6 @@ export default class MyProblems extends React.Component {
 
         return (
             <div>
-
                 <h1>My Problems</h1>
 
                 {noProblemMessage}
@@ -164,7 +156,7 @@ export default class MyProblems extends React.Component {
 
 
 
-                <div class="row">{MyProblems}</div>
+                <div class="row" path="/myProblems">{MyProblems}</div>
             </div>
         );
     }
