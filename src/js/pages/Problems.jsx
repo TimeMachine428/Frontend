@@ -27,7 +27,9 @@ export default class Problems extends React.Component {
             description: "sk8",
             difficulty: 1,
             good: 4,
-            id: 1
+            id: 1,
+            load: "current solution"
+
         },
 
             {
@@ -81,7 +83,9 @@ export default class Problems extends React.Component {
         description: "sk8",
         difficulty: 1,
         good: 4,
-        id: 1
+        id: 1,
+        load: "current solution"
+
     },
         {
             name: "2",

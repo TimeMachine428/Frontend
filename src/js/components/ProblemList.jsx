@@ -76,11 +76,10 @@ export default class ProblemList extends React.Component{
         const solutionsClass = location.pathname.match(/^\/solutions/) ? "active" : "";
 
         let continueProblem;
-        let loadAvailable = false;
 
-        if (loadAvailable) {
+        if (problem.load != null) {
 
-            continueProblem = <Link className="btn btn-success" to={{pathname: "/solutions", state:{ testvalue: "current solution"}}}  >Continue</Link>;
+            continueProblem = <Link className="btn btn-success" to={{pathname: "/solutions", state:{ testvalue: problem.load}}}  >Continue</Link>;
 
         }
 
