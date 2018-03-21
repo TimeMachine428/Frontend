@@ -10,7 +10,7 @@ import Select from "react-select";
 
 import List from "../components/ProblemList.jsx";
 var sortBy = require('lodash.sortby');
-//var _ = require('underscore')._;
+var _ = require('underscore')._;
 
 
 export default class Problems extends React.Component {
