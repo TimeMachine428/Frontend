@@ -63,5 +63,7 @@ typings/
 # Random files that show up from time to time
 .DS_Store
 
+package-lock.json
+
 client.min.js
 

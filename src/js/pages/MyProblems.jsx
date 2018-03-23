@@ -133,7 +133,25 @@ export default class MyProblems extends React.Component {
 
     componentDidMount() {
 
-        this.handleFilter(this.username)
+        axios.get("http://localhost:80/restapi/problems/")
+            .then(response => {
+                console.log(response.data);
+                let problems = response.data.map((ent) => {
+                    if (ent["difficulty"] === 0) {
+                        ent["difficulty"] = null;
+                    }
+                    if (ent["rating"] === 0) {
+                        ent["rating"] = null;
+                    }
+                    return ent
+                })
+                this.Problems = problems
+                this.handleFilter(this.username);
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+        console.log(this.username);
     }
 
 
