@@ -20,6 +20,9 @@ export default class MyProblems extends React.Component {
     componentDidMount() {
 
     }
+    handleDelete() {
+        
+    }
 
 
     render() {
@@ -28,7 +31,9 @@ export default class MyProblems extends React.Component {
         return (
             <div>
                 <h1>My Profile</h1>
-
+                    <p>
+                        <a class="btn btn-success" onClick={this.handleDelete}>Delete my account</a>
+                    </p>
             </div>
         );
     }
