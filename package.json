@@ -44,7 +44,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "dev": "webpack-dev-server --content-base www --inline --hot",
+    "dev": "webpack-dev-server --content-base www --inline --hot --host 0.0.0.0",
     "lint": "eslint \"src/**/*.js?(x)\"",
     "test": "jest",
     "postinstall": "webpack"
