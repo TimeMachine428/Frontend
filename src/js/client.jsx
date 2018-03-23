@@ -10,6 +10,7 @@ import Settings from "./pages/Settings.jsx";
 import Solutions from "./pages/Solutions.jsx";
 import CreateProblem from "./pages/CreateProblem.jsx";
 import MyProblems from "./pages/MyProblems.jsx";
+import MyProfile from "./pages/MyProfile.jsx";
 import CreateAccount from "./pages/CreateAccount.jsx";
 import TermsConditions from "./pages/TermsConditions.jsx"
 const app = document.getElementById("app");
@@ -24,6 +25,7 @@ ReactDOM.render(
       <Route path="solutions(/:testvalue)" name="solutions" component={Solutions}/>
       <Route path="createProblem(/:testvalue)" name="createProblem" component={CreateProblem}/>
       <Route path="myProblems" name="myProblems" component={MyProblems}/>
+      <Route path="myProfile" name="myProfile" component={MyProfile}/>
       <Route path="createAccount(/:testvalue)" name="createAccount" component={CreateAccount}/>
       <Route path="termsConditions" name="termsConditions" component={TermsConditions}/>
     </Route>

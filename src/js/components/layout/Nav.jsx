@@ -120,7 +120,7 @@ export default class Nav extends React.Component {
     handleCloseModal () {
         this.setState({ showModal: false });
 
-        if(this.props.location.pathname === ("/problems" || "/settings" || "/myProblems")) {
+        if(this.props.location.pathname === ("/problems" || "/settings" || "/myProblems" || "/myProfile")) {
             if (!this.state.isLoggedIn) {
                 this.handleOpenCheckModal();
             }
@@ -161,6 +161,7 @@ export default class Nav extends React.Component {
         const helpClass = location.pathname.match(/^\/help/) ? "active" : "";
         const problemsClass = location.pathname.match(/^\/problems/) ? "active" : "";
         const myProblemsClass = location.pathname.match(/^\/myProblems/) ? "active" : "";
+        const myProfileClass = location.pathname.match(/^\/myProfile/) ? "active" : "";
         const settingsClass = location.pathname.match(/^\/settings/) ? "active" : "";
         const createAccountClass = location.pathname.match(/^\/createAccount/) ? "active" : "";
         const navClass = collapsed ? "collapse" : "";
@@ -188,6 +189,9 @@ export default class Nav extends React.Component {
                             <li className={myProblemsClass}>
                                 <Link to={{pathname: "myProblems", state:{login: this.state.isLoggedIn}}} onClick={this.toggleCollapse.bind(this)}>My Problems</Link>
                             </li>
+                            <li className={myProfileClass}>
+                                <Link to={{pathname: "myProfile", state:{login: this.state.isLoggedIn}}} onClick={this.toggleCollapse.bind(this)}>My Profile</Link>
+                            </li>
                             <li className={settingsClass}>
                                 <Link to={{pathname: "settings", state:{login: this.state.isLoggedIn}}} onClick={this.toggleCollapse.bind(this)}>Settings</Link>
                             </li>
@@ -197,6 +201,7 @@ export default class Nav extends React.Component {
                             <li className={createAccountClass}>
                                 <Link to="createAccount" onClick={this.toggleCollapse.bind(this)}>Sign Up</Link>
                             </li>
+
                         </ul>
                         <a  className="btn -btn-default" onClick={this.handleOpenModal}>Login</a>
                         <a className="btn -btn-default" onClick={this.logout}>Logout</a>
@@ -243,7 +248,10 @@ export default class Nav extends React.Component {
                                 this.props.location.pathname.toString() === ("settings") ||
                                 this.props.location.pathname.toString() === ("/settings") ||
                                 this.props.location.pathname.toString() === ("myProblems") ||
-                                this.props.location.pathname.toString() === ("/myProblems")
+                                this.props.location.pathname.toString() === ("/myProblems") || 
+                                this.props.location.pathname.toString() === ("myProfile") ||
+                                this.props.location.pathname.toString() === ("/myProfile")
+
                             )}
                             contentLabel="Minimal Modal Example">
                             <h1>Please Login To View This Page</h1>
