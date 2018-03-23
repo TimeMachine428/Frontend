@@ -6,8 +6,8 @@ import ReactModal from "react-modal"
 import Problems from "./../../pages/Problems.jsx";
 
 export default class Nav extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             collapsed: true,
             showModal: false,
@@ -194,12 +194,20 @@ export default class Nav extends React.Component {
                             <li className={helpClass}>
                                 <Link to="help" onClick={this.toggleCollapse.bind(this)}>Help</Link>
                             </li>
-                            <li className={createAccountClass}>
-                                <Link to="createAccount" onClick={this.toggleCollapse.bind(this)}>Sign Up</Link>
-                            </li>
+                            {!this.state.isLoggedIn && (
+                                <li className={createAccountClass}>
+                                    <Link to="createAccount" onClick={this.toggleCollapse.bind(this)}>Sign Up</Link>
+                                </li>
+                            )}
                         </ul>
-                        <a  className="btn -btn-default" onClick={this.handleOpenModal}>Login</a>
-                        <a className="btn -btn-default" onClick={this.logout}>Logout</a>
+                        {!this.state.isLoggedIn && (
+                            <a  className="btn -btn-default" onClick={this.handleOpenModal}>Login</a>
+                        )}
+
+                        {this.state.isLoggedIn && (
+                          <a className="btn -btn-default" onClick={this.logout}>Logout</a>
+                        )}
+
                     </div>
                     <div>
                         <ReactModal
@@ -238,12 +246,12 @@ export default class Nav extends React.Component {
                                 }
                             }}
                             isOpen={!this.state.isLoggedIn && !this.state.showModal && (
-                                this.props.location.pathname.toString() === ("problems") ||
-                                this.props.location.pathname.toString() === ("/problems") ||
-                                this.props.location.pathname.toString() === ("settings") ||
-                                this.props.location.pathname.toString() === ("/settings") ||
-                                this.props.location.pathname.toString() === ("myProblems") ||
-                                this.props.location.pathname.toString() === ("/myProblems")
+                                this.props.location.pathname === ("problems") ||
+                                this.props.location.pathname === ("/problems") ||
+                                this.props.location.pathname === ("settings") ||
+                                this.props.location.pathname === ("/settings") ||
+                                this.props.location.pathname === ("myProblems") ||
+                                this.props.location.pathname === ("/myProblems")
                             )}
                             contentLabel="Minimal Modal Example">
                             <h1>Please Login To View This Page</h1>
