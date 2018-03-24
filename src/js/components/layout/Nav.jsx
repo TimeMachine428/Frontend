@@ -3,7 +3,6 @@ import axios from "axios";
 import { IndexLink, Link } from "react-router";
 import PropTypes from "prop-types";
 import ReactModal from "react-modal"
-import Problems from "./../../pages/Problems.jsx";
 
 export default class Nav extends React.Component {
     constructor(props) {
@@ -22,12 +21,23 @@ export default class Nav extends React.Component {
         this.handleChangePass = this.handleChangePass.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleOpenModal = this.handleOpenModal.bind(this);
-        this.handleOpenCheckModal = this.handleOpenCheckModal.bind(this);
         this.handleCloseModal = this.handleCloseModal.bind(this);
-        this.handleCloseCheckModal = this.handleCloseCheckModal.bind(this);
         this.logout = this.logout.bind(this);
 
         this.onUnload = this.onUnload.bind(this);
+    }
+    navigate() {
+        const { router } = this.context;
+        if(!this.state.isLoggedIn &&
+            (this.props.location.pathname.includes("problems") ||
+            this.props.location.pathname.includes("myProblems") ||
+            this.props.location.pathname.includes("settings") ||
+            this.props.location.pathname.includes("createProblem") ||
+            this.props.location.pathname.includes("solutions"))) {
+            localStorage.setItem("lastLocation", this.props.location.pathname);
+            alert(this.props.location.pathname);
+            router.push('/loginPrompt');
+        }
     }
 
     getInitialState() {
@@ -35,7 +45,7 @@ export default class Nav extends React.Component {
 
             if(localStorage.getItem("time")) {
                 const time = parseInt(localStorage.getItem("time"));
-                if((new Date().getTime() - time) > 1000*30) {  //1000 ms = 1s, 60s = 1, 60min = 1hour...
+                if((new Date().getTime() - time) > 1000*30) {  //1000 ms = 1s, 60s = 1min, 60min = 1hour...
                     localStorage.setItem("userLogged", "");
                     return false
                 }
@@ -59,14 +69,15 @@ export default class Nav extends React.Component {
     }
 
     onSuccessLogin(user) {
-        //display username somewhere
+        const { router } = this.context;
         alert("login successful");
         localStorage.setItem("loginInfo", "true");
         localStorage.setItem("userLogged", user);
         this.setState({isLoggedIn: true});
         this.handleCloseModal();
         this.setState({username: "", password: ""});
-        setTimeout(function () { window.location.reload(true); }, 0);
+        router.push(localStorage.getItem("lastLocation"));
+        //setTimeout(function () { window.location.reload(true); }, 0);
     }
 
     onFailLogin() {
@@ -80,18 +91,20 @@ export default class Nav extends React.Component {
         } else if(this.state.password === "") {
             alert("Password Required")
         } else {
+            //this.onSuccessLogin(this.state.username);
             //insert backend call here
             //timeout waiting for callback
+
             let payload = {"username": this.state.username,
-                "password":this.state.password}
+                "password":this.state.password};
             axios.post("http://localhost:80/api-token-auth/", payload)
                 .then(response => {
                     console.log(response.data);
                     if (response.data != []) {
                         this.onSuccessLogin(this.state.username);    //username to be changed to the userid
                         // alert(this.state.username + this.state.password);
-                        this.setState({token: response.data.token})
-                        localStorage.setItem("JWT-token", response.data.token)
+                        this.setState({token: response.data.token});
+                        localStorage.setItem("JWT-token", response.data.token);
                         location.href = "http://localhost:8080";
                     }
                     else {
@@ -109,36 +122,22 @@ export default class Nav extends React.Component {
 
     handleOpenModal () {
         this.setState({ showModal: true });
-        this.handleCloseCheckModal();
-    }
-
-
-    handleOpenCheckModal() {
-        this.setState({showAlert: true});
     }
 
     handleCloseModal () {
         this.setState({ showModal: false });
 
-        if(this.props.location.pathname === ("/problems" || "/settings" || "/myProblems")) {
-            if (!this.state.isLoggedIn) {
-                this.handleOpenCheckModal();
-            }
-        }
         this.setState({username: "", password: ""});
     }
 
-    handleCloseCheckModal () {
-        this.setState( {showAlert: false});
-    }
-
     logout() {
+        const { router } = this.context;
         localStorage.removeItem("loginInfo");
         localStorage.removeItem("userLogged");
-        localStorage.removeItem("JTW-token")
+        localStorage.removeItem("JTW-token");
         alert("logout successful");
         this.setState({isLoggedIn: false});
-        location.href = "http://localhost:8080";
+        router.push("/")
     }
 
     onUnload() {
@@ -150,6 +149,10 @@ export default class Nav extends React.Component {
     componentDidMount() {
         window.addEventListener("beforeunload", this.onUnload);
     }
+    componentDidUpdate(){
+        this.navigate();
+    }
+
     componentWillUnmount() {
         window.removeEventListener("beforeunload", this.onUnload);
     }
@@ -180,16 +183,16 @@ export default class Nav extends React.Component {
                     <div className={"navbar-collapse " + navClass} id="bs-example-navbar-collapse-1">
                         <ul className="nav navbar-nav">
                             <li className={featuredClass}>
-                                <IndexLink to={{pathname: "/", state:{login: this.state.isLoggedIn}}} onClick={this.toggleCollapse.bind(this)}>Home</IndexLink>
+                                <IndexLink to={{pathname: "/"}} onClick={this.toggleCollapse.bind(this)}>Home</IndexLink>
                             </li>
                             <li className={problemsClass}>
-                                <Link to={{pathname: "problems", state:{login: this.state.isLoggedIn}}} onClick={this.toggleCollapse.bind(this)}>Problems</Link>
+                                <Link to={{pathname: "problems"}} onClick={this.toggleCollapse.bind(this)}>Problems</Link>
                             </li>
                             <li className={myProblemsClass}>
-                                <Link to={{pathname: "myProblems", state:{login: this.state.isLoggedIn}}} onClick={this.toggleCollapse.bind(this)}>My Problems</Link>
+                                <Link to={{pathname: "myProblems"}} onClick={this.toggleCollapse.bind(this)}>My Problems</Link>
                             </li>
                             <li className={settingsClass}>
-                                <Link to={{pathname: "settings", state:{login: this.state.isLoggedIn}}} onClick={this.toggleCollapse.bind(this)}>Settings</Link>
+                                <Link to={{pathname: "settings"}} onClick={this.toggleCollapse.bind(this)}>Settings</Link>
                             </li>
                             <li className={helpClass}>
                                 <Link to="help" onClick={this.toggleCollapse.bind(this)}>Help</Link>
@@ -207,10 +210,10 @@ export default class Nav extends React.Component {
                         {this.state.isLoggedIn && (
                           <a className="btn -btn-default" onClick={this.logout}>Logout</a>
                         )}
-
                     </div>
                     <div>
                         <ReactModal
+                            appElement={document.getElementById("app")}
                             style={{
                                 overlay:{
                                     left: "0%",
@@ -254,4 +257,7 @@ Nav.defaultProps = {
     location: {
         pathname: "",
     },
+};
+Nav.contextTypes = {
+    router: PropTypes.object
 };
