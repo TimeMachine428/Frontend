@@ -235,27 +235,7 @@ export default class Nav extends React.Component {
                             <a className="btn -btn-action" onClick={this.handleSubmit}>Submit</a>
                             <Link className="btn -btn-action" to="createAccount" onClick={this.handleCloseModal}>Create New Account?</Link>
                         </ReactModal>
-                        <ReactModal
-                            style={{
-                                overlay:{
-                                    left: "0%",
-                                    right: "25%",
-                                    top: "90px",
-                                    height: "600px",
-                                    width: "1200px"
-                                }
-                            }}
-                            isOpen={!this.state.isLoggedIn && !this.state.showModal && (
-                                this.props.location.pathname === ("problems") ||
-                                this.props.location.pathname === ("/problems") ||
-                                this.props.location.pathname === ("settings") ||
-                                this.props.location.pathname === ("/settings") ||
-                                this.props.location.pathname === ("myProblems") ||
-                                this.props.location.pathname === ("/myProblems")
-                            )}
-                            contentLabel="Minimal Modal Example">
-                            <h1>Please Login To View This Page</h1>
-                        </ReactModal>
+
                     </div>
                 </div>
             </nav>
