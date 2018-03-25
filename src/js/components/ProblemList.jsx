@@ -68,6 +68,10 @@ export default class ProblemList extends React.Component{
         }
     }
 
+    editProblem(problem){
+        this.props.editProblem(problem)
+    }
+
 
 
     render() {
@@ -89,9 +93,8 @@ export default class ProblemList extends React.Component{
                 <a  className={solutionsClass}>
                 
                     <Link className="btn btn-success" to={{pathname: "/solutions", state:{ testvalue: problem}}}  >Solve</Link>
-                    <button onClick={(e)=> this.deleteProblem(problem)} type="button" className="btn btn-default btn-sm">
-                        Delete
-                    </button>
+                    <button onClick={(e)=> this.deleteProblem(problem)} type="button" className="btn btn-default btn-sm"> Delete </button>
+                    <button onClick={this.editProblem.bind(this, problem)}type="button" className="btn btn-default btn-sm"> Edit </button>
 
 
 
