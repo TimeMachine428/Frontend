@@ -12,6 +12,7 @@ export default class Solutions extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.onFeedback1 = this.onFeedback1.bind(this);
         this.onFeedback2 = this.onFeedback2.bind(this);
+        this.saveProgress = this.saveProgress.bind(this);
     }
 
     handleChange(event) {
@@ -37,6 +38,15 @@ export default class Solutions extends React.Component {
         event.preventDefault();
     }
 
+    saveProgress(event){
+        if (this.state.value == ""){
+            alert("Please enter a solution");
+        }else{
+            alert(this.state.value);
+        }
+        event.preventDefault();
+    }
+
     render() {
         return(
             <div>
@@ -47,6 +57,7 @@ export default class Solutions extends React.Component {
                 <a class="btn -btn-default" onClick={this.handleSubmit}>Submit</a>
                 <button onClick={this.onFeedback1}>Success Demo</button>
                 <button onClick={this.onFeedback2}>Fail Demo</button>
+                <button onClick={this.saveProgress}>Save Progress</button>
             </div>
         );
     }
