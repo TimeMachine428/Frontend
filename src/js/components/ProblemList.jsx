@@ -169,8 +169,6 @@ export default class ProblemList extends React.Component{
                 <ReactStars count={5} value={problem.rating} onChange = {(newValue) => {this.handleRating(newValue)}} size={24} half={false} color2={"#fffe2b"}/>
                 <a  className={solutionsClass}>
                     <Link className="btn btn-success" to={{pathname: "/solutions", state:{ testvalue: problem}}}  >Solve</Link>
-<<<<<<< HEAD
-                    <button onClick={(e)=> this.deleteProblem(problem)} type="button" className="btn btn-default btn-sm"> Delete </button>
                     <button onClick={this.editProblem.bind(this, problem)}type="button" className="btn btn-default btn-sm"> Edit </button>
 
 
@@ -179,9 +177,7 @@ export default class ProblemList extends React.Component{
 
 
 
-=======
                     {deletebtn}
->>>>>>> origin/dev
                 </a>
 
 
