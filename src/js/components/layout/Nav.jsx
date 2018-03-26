@@ -6,6 +6,7 @@ import ReactModal from "react-modal"
 import Problems from "./../../pages/Problems.jsx";
 
 export default class Nav extends React.Component {
+
     constructor() {
         super();
         this.state = {
