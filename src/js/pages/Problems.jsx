@@ -251,6 +251,7 @@ export default class Problems extends React.Component {
             noProblemMessage = <h1> No problems to display </h1>;
         }
 
+
         return (
             <div>
                 <h1>Problems</h1>

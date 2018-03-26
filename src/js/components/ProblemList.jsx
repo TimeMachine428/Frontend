@@ -15,7 +15,8 @@ export default class ProblemList extends React.Component{
             showModal: false,
             value:"",
             rating: "",
-            difficulty: ""
+            difficulty: "",
+            onMyProblem: false
         };
 
         this.handleOpenModal = this.handleOpenModal.bind(this);
@@ -144,16 +145,26 @@ export default class ProblemList extends React.Component{
         this.props.editProblem(problem)
     }
 
+    checkMyProblem(){
+
+    }
+
 
     render() {
+
         const solutionsClass = location.pathname.match(/^\/solutions/) ? "active" : "";
 
         const { problem } = this.props;
 
-        let deletebtn = null
+        let deletebtn = null;
+        let editbtn = null;
+        this.state.onMyProblem = localStorage.getItem("OnMyProblem");
+        console.log(this.state.onMyProblem);
 
-        if(true) {
-            deletebtn = <button onClick={(e)=> this.deleteProblem(problem)} type="button" className="btn btn-default btn-sm">Delete</button>
+
+        if(this.state.onMyProblem) {
+            deletebtn = <button onClick={(e)=> this.deleteProblem(problem)} type="button" className="btn btn-default btn-sm">Delete</button>;
+            editbtn = <button onClick={this.editProblem.bind(this, problem)}type="button" className="btn btn-default btn-sm"> Edit </button>;
         }
 
         return (
@@ -169,14 +180,7 @@ export default class ProblemList extends React.Component{
                 <ReactStars count={5} value={problem.rating} onChange = {(newValue) => {this.handleRating(newValue)}} size={24} half={false} color2={"#fffe2b"}/>
                 <a  className={solutionsClass}>
                     <Link className="btn btn-success" to={{pathname: "/solutions", state:{ testvalue: problem}}}  >Solve</Link>
-                    <button onClick={this.editProblem.bind(this, problem)}type="button" className="btn btn-default btn-sm"> Edit </button>
-
-
-
-
-
-
-
+                    {editbtn}
                     {deletebtn}
                 </a>
 
