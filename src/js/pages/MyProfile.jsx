@@ -20,7 +20,7 @@ export default class MyProfile extends React.Component {
     username = localStorage.getItem("userLogged");
     state = {
         showModal: false,
-
+        id: '',
     };
 
 
@@ -34,56 +34,40 @@ export default class MyProfile extends React.Component {
         //add the delete acccount
         // console.log('handle delete');
         console.log(localStorage);
-        var id;
+        // var id;
 
         axios.get("http://localhost:80/restapi/users/")
             .then(response => {
-                console.log(response.data);
+                // console.log(response.data);
                 var length = response.data.length;
                 for (var i = 0; i < length; i++) {
                     if (response.data[i].username == this.username) {
                         // console.log(response.data[i].username);
-                        id = response.data[i].id;
-                        // console.log(id);
-                    }
-                }
+                        this.state.id = response.data[i].id;
+                        console.log(this.state.id);
+                        var config = {
+                            headers: {Authorization: "JWT " + localStorage.getItem("JWT-token")}
+                        }
+                        axios.delete("http://localhost:80/restapi/users/" + this.state.id + "/", config)
+                            .then(response => {
+                                console.log(response);
+                                localStorage.removeItem("loginInfo");
+                                localStorage.removeItem("userLogged");
+                                localStorage.removeItem("JTW-token"); 
+                                location.href = "http://localhost:8080";
 
-            })
+                            })
+                        .catch(error => {
+                            console.log(error);
+                        })
+                                }
+                            }
+
+                        })
             .catch(function (error) {
                 console.log(error);
             })
-
-        
-        console.log(localStorage.getItem("JWT-token"));
-        var config = {
-                headers: {Authorization: "JWT " + localStorage.getItem("JWT-token")}
-            }
-        axios.delete("http://localhost:80/restapi/users/" + id + "/", config)
-            .then(response => {
-                console.log(response);
-            })
-            .catch(error => {
-                console.log(error);
-            })
-
-        // localStorage.removeItem("loginInfo");
-        // localStorage.removeItem("userLogged");
-        // localStorage.removeItem("JTW-token");
-        // localStorage.removeItem("loginInfo");
-        // localStorage.removeItem("userLogged");
-        // localStorage.removeItem("JTW-token")
-        // alert("logout successful");
-        // location.href = "http://localhost:8080";
-        // var config = {
-        //     headers: {Authorization: "JWT " + localStorage.getItem("JWT-token")}
-        // };
-        // axios.delete("http://localhost:80/restapi/users/" + user.id + "/", config)
-        //     .then(response => {
-        //         console.log(response);
-        //     })
-        //     .catch(error => {
-        //         console.log(error);
-        //     })   
+        console.log('rip');
     }
 
 
