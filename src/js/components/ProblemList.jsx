@@ -3,7 +3,10 @@ import ReactStars from "react-stars"
 import { Link } from "react-router";
 import ReactModal from "react-modal";
 import Textarea from "react-textarea-autosize";
+import axios from "axios";
 
+axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+axios.defaults.xsrfCookieName = "csrftoken";
 export default class ProblemList extends React.Component{
 
     constructor () {
@@ -11,7 +14,8 @@ export default class ProblemList extends React.Component{
         this.state = {
             showModal: false,
             value:"",
-            rating: ""
+            rating: "",
+            difficulty: ""
         };
 
         this.handleOpenModal = this.handleOpenModal.bind(this);
@@ -35,36 +39,104 @@ export default class ProblemList extends React.Component{
         this.setState({value: event.target.value});
     }
 
-    handleSubmit(event) {
+    handleSubmit(event, problem) {
         event.preventDefault();
         this.handleCloseModal();
-        //insert backend call here
+
+        let jsonpayload = {
+            "rating": this.state.rating
+        }
+
+        var config = {
+            headers: {Authorization: "JWT " + localStorage.getItem("JWT-token")}
+        }
+        axios.patch("http://localhost:80/restapi/problems/" + problem.id + "/", jsonpayload, config)
+            .then(response => {
+                console.log(response)
+                setTimeout(function () { window.location.reload(true); }, 0);
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+
+
         this.setState({value: ""});
     }
 
-    handleRating(event){
-        this.setState({rating: event});
+    getDifficulty(problemID){
+        axios.get("http://localhost:80/restapi/problems/" + problemID + "/")
+            .then(response => {
+                this.setState({difficulty:response.data["difficulty"]})
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+    }
+
+    getRating(problemID){
+        axios.get("http://localhost:80/restapi/problems/" + problemID + "/")
+            .then(response => {
+                this.setState({rating:response.data["rating"]})
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+    }
+
+    handleDifficulty(newDifficulty, problem){
+        let jsonpayload = {
+            "difficulty": newDifficulty
+        }
+
+        var config = {
+            headers: {Authorization: "JWT " + localStorage.getItem("JWT-token")}
+        }
+        axios.patch("http://localhost:80/restapi/problems/" + problem.id + "/", jsonpayload, config)
+            .then(response => {
+                console.log(response)
+                // setTimeout(function () { window.location.reload(true); }, 0);
+                // return response.data["difficulty"]
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+    }
+
+    handleRating(newRating){
+        this.setState({rating: newRating});
         this.handleOpenModal();
+
     }
 
-    getDiffRating(problemID){
-        //go get current rating from backend with problem id
-        //return (problemID + 1)
-    }
-    getRevRating(problemID){
-        //go get current rating from backend with problem id
-        //return (problemID - 1)
-    }
-
-    setDiffRating(newRating){
-        //update value in backend with new rating, problem id and user id
-        //window.alert(newRating)
+    componentDidMount() {
+        // this.getDifficulty(problem.id)
+        // this.getRating(problem.id)
     }
 
     deleteProblem(problem){
-        console.log('remove' + problem.name);
+        console.log("remove" + problem.name);
         if(console.log !== ""){
-            alert("Are you sure you want to delete this problem?")
+            //alert("Are you sure you want to delete this problem?")
+            var c = confirm("Are you sure you want to delete this problem?")
+            if(c==true) {
+                alert("deleted")
+                var config = {
+                    headers: {Authorization: "JWT " + localStorage.getItem("JWT-token")}
+                }
+                axios.delete("http://localhost:80/restapi/problems/" + problem.id + "/", config)
+                    .then(response => {
+                        console.log(response);
+                        setTimeout(function () { window.location.reload(true); }, 0);
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    })
+            }
+            else{
+                alert("cancelled")
+            }
+
+
         }
     }
 
@@ -73,26 +145,31 @@ export default class ProblemList extends React.Component{
     }
 
 
-
     render() {
-        const{ problem } = this.props;
-
         const solutionsClass = location.pathname.match(/^\/solutions/) ? "active" : "";
+
+        const { problem } = this.props;
+
+        let deletebtn = null
+
+        if(true) {
+            deletebtn = <button onClick={(e)=> this.deleteProblem(problem)} type="button" className="btn btn-default btn-sm">Delete</button>
+        }
 
         return (
             <div className="col-md-4">
-                <h4>{problem.name}</h4>
+                <h4>{problem.title}</h4>
                 <p>
                     by: {problem.author.username} <br/>
                     {problem.description} <br/>
                 </p>
                 <p id = "diff">difficulty: </p>
-                <ReactStars count={5} value={problem.difficulty} onChange = {this.setDiffRating} size={24} half={false} color2={"#fffe2b"}/>
+                <ReactStars count={5} value={problem.difficulty} onChange = {(newValue) => {this.handleDifficulty(newValue, problem)}} size={24} half={false} color2={"#fffe2b"}/>
                 <p id = "rev">reviews: </p>
-                <ReactStars count={5} value={problem.good} onChange = {this.handleRating} size={24} half={false} color2={"#fffe2b"}/>
+                <ReactStars count={5} value={problem.rating} onChange = {(newValue) => {this.handleRating(newValue)}} size={24} half={false} color2={"#fffe2b"}/>
                 <a  className={solutionsClass}>
-                
                     <Link className="btn btn-success" to={{pathname: "/solutions", state:{ testvalue: problem}}}  >Solve</Link>
+<<<<<<< HEAD
                     <button onClick={(e)=> this.deleteProblem(problem)} type="button" className="btn btn-default btn-sm"> Delete </button>
                     <button onClick={this.editProblem.bind(this, problem)}type="button" className="btn btn-default btn-sm"> Edit </button>
 
@@ -102,6 +179,9 @@ export default class ProblemList extends React.Component{
 
 
 
+=======
+                    {deletebtn}
+>>>>>>> origin/dev
                 </a>
 
 
@@ -120,7 +200,7 @@ export default class ProblemList extends React.Component{
                     <button onClick={this.handleCloseModal}>Close</button>
                     <h1>Leave a comment (optional)</h1>
                     <Textarea style = {{width:400, height: 300}} onChange={this.handleChange}/>
-                    <a className="btn -btn-default" onClick={this.handleSubmit}>Submit</a>
+                    <a className="btn -btn-default" onClick={(e) => {this.handleSubmit(e, problem)}}>Submit</a>
                 </ReactModal>
             </div>
         );

@@ -11,8 +11,12 @@ import Solutions from "./pages/Solutions.jsx";
 import CreateProblem from "./pages/CreateProblem.jsx";
 import MyProblems from "./pages/MyProblems.jsx";
 import CreateAccount from "./pages/CreateAccount.jsx";
+<<<<<<< HEAD
 import Resources from "./pages/Resources.jsx";
 
+=======
+import TermsConditions from "./pages/TermsConditions.jsx"
+>>>>>>> origin/dev
 const app = document.getElementById("app");
 
 ReactDOM.render(
@@ -26,7 +30,11 @@ ReactDOM.render(
       <Route path="createProblem(/:testvalue)" name="createProblem" component={CreateProblem}/>
       <Route path="myProblems" name="myProblems" component={MyProblems}/>
       <Route path="createAccount(/:testvalue)" name="createAccount" component={CreateAccount}/>
+<<<<<<< HEAD
       <Route path="resources" name="resources" component={Resources} />
+=======
+      <Route path="termsConditions" name="termsConditions" component={TermsConditions}/>
+>>>>>>> origin/dev
     </Route>
   </Router>,
   app

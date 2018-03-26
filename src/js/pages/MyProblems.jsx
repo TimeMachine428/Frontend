@@ -1,18 +1,11 @@
 import React from "react";
-
 import axios from "axios";
-
+import { Router } from "react-router";
+import Select from "react-select";
+import List from "../components/ProblemList.jsx";
 
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 axios.defaults.xsrfCookieName = "csrftoken";
-import Select from "react-select";
-
-import List from "../components/ProblemList.jsx";
-
-
-
-
-
 
 export default class MyProblems extends React.Component {
 
@@ -140,7 +133,25 @@ export default class MyProblems extends React.Component {
 
     componentDidMount() {
 
-        this.handleFilter(this.username)
+        axios.get("http://localhost:80/restapi/problems/")
+            .then(response => {
+                console.log(response.data);
+                let problems = response.data.map((ent) => {
+                    if (ent["difficulty"] === 0) {
+                        ent["difficulty"] = null;
+                    }
+                    if (ent["rating"] === 0) {
+                        ent["rating"] = null;
+                    }
+                    return ent
+                })
+                this.Problems = problems
+                this.handleFilter(this.username);
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+        console.log(this.username);
     }
 
 
@@ -155,7 +166,6 @@ export default class MyProblems extends React.Component {
 
         return (
             <div>
-
                 <h1>My Problems</h1>
 
                 {noProblemMessage}
@@ -164,7 +174,7 @@ export default class MyProblems extends React.Component {
 
 
 
-                <div class="row">{MyProblems}</div>
+                <div class="row" path="/myProblems">{MyProblems}</div>
             </div>
         );
     }
