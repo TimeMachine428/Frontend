@@ -80,7 +80,7 @@ export default class MyProfile extends React.Component {
             <div>
                 <h1>My Profile</h1>
                     <p>
-                        <a class="btn btn-success" onClick={this.handleDelete}>Delete my account</a>
+                        <a class="btn btn-danger" onClick={() => {if(confirm('Are you sure you want to delete your account?')) {this.handleDelete};}}>Delete my account</a>
                     </p>
             </div>
         );
