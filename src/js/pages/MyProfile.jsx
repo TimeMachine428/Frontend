@@ -30,44 +30,47 @@ export default class MyProfile extends React.Component {
 
 
     handleDelete() {
-        // todo: add the logout
-        //add the delete acccount
-        // console.log('handle delete');
-        console.log(localStorage);
-        // var id;
+		
+		if(comfirm("Are you sure you wish to delete your account?")==true){
+			// todo: add the logout
+			//add the delete acccount
+			// console.log('handle delete');
+			console.log(localStorage);
+			// var id;
+		
+			axios.get("http://localhost:80/restapi/users/")
+				.then(response => {
+					// console.log(response.data);
+					var length = response.data.length;
+					for (var i = 0; i < length; i++) {
+						if (response.data[i].username == this.username) {
+							// console.log(response.data[i].username);
+							this.state.id = response.data[i].id;
+							console.log(this.state.id);
+							var config = {
+								headers: {Authorization: "JWT " + localStorage.getItem("JWT-token")}
+							}
+							axios.delete("http://localhost:80/restapi/users/" + this.state.id + "/", config)
+								.then(response => {
+									console.log(response);
+									localStorage.removeItem("loginInfo");
+									localStorage.removeItem("userLogged");
+									localStorage.removeItem("JTW-token"); 
+									location.href = "http://localhost:8080";
 
-        axios.get("http://localhost:80/restapi/users/")
-            .then(response => {
-                // console.log(response.data);
-                var length = response.data.length;
-                for (var i = 0; i < length; i++) {
-                    if (response.data[i].username == this.username) {
-                        // console.log(response.data[i].username);
-                        this.state.id = response.data[i].id;
-                        console.log(this.state.id);
-                        var config = {
-                            headers: {Authorization: "JWT " + localStorage.getItem("JWT-token")}
-                        }
-                        axios.delete("http://localhost:80/restapi/users/" + this.state.id + "/", config)
-                            .then(response => {
-                                console.log(response);
-                                localStorage.removeItem("loginInfo");
-                                localStorage.removeItem("userLogged");
-                                localStorage.removeItem("JTW-token"); 
-                                location.href = "http://localhost:8080";
+								})
+							.catch(error => {
+								console.log(error);
+							})
+									}
+								}
 
-                            })
-                        .catch(error => {
-                            console.log(error);
-                        })
-                                }
-                            }
-
-                        })
-            .catch(function (error) {
-                console.log(error);
-            })
-        console.log('rip');
+							})
+				.catch(function (error) {
+					console.log(error);
+				})
+			console.log('rip');
+		}
     }
 
 
@@ -80,7 +83,7 @@ export default class MyProfile extends React.Component {
             <div>
                 <h1>My Profile</h1>
                     <p>
-                        <a class="btn btn-danger" onClick={() => {if(confirm('Are you sure you want to delete your account?')) {this.handleDelete};}}>Delete my account</a>
+                        <a class="btn btn-danger" onClick={this.handleDelete}>Delete my account</a>
                     </p>
             </div>
         );
