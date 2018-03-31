@@ -30,6 +30,12 @@ export default class Resources extends React.Component {
 	    			<h3>Algorithms</h3>
 	    			<a class="badge badge-light" href="https://www.hackerearth.com/practice/algorithms/graphs/breadth-first-search/tutorial/" target="_blank"> Breadth First Search </a> <br/>
 	    			<a class="badge badge-light" href="https://www.hackerearth.com/practice/algorithms/graphs/depth-first-search/tutorial/" target="_blank"> Depth First Search </a> <br/>
+	    			<a class="badge badge-light" href="https://www.geeksforgeeks.org/greedy-algorithms-set-2-kruskals-minimum-spanning-tree-mst/" target="_blank"> Kruskal's Algorithm </a> <br/>
+	    			<a class="badge badge-light" href="https://www.geeksforgeeks.org/greedy-algorithms-set-9-boruvkas-algorithm/" target="_blank"> Boruvka's Algorithm </a> <br/>
+	    			<a class="badge badge-light" href="http://lcm.csa.iisc.ernet.in/dsa/node183.html" target="_blank"> Prim's Algorithm </a> <br/>
+	    			<a class="badge badge-light" href="http://math.mit.edu/~rothvoss/18.304.3PM/Presentations/1-Melissa.pdf" target="_blank"> Dijkstra's Algorithm </a> <br/>
+	    			<a class="badge badge-light" href="https://www.hackerearth.com/practice/algorithms/greedy/basics-of-greedy-algorithms/tutorial/" target="_blank"> Greedy Algorithms </a> <br/>
+	    			<a class="badge badge-light" href="https://www.topcoder.com/community/data-science/data-science-tutorials/dynamic-programming-from-novice-to-advanced/" target="_blank"> Dynamic Programming </a> <br/>
 	    		</div>	
     		</div>
     	</div>
