@@ -9,10 +9,10 @@ export default class CreateAccount extends React.Component {
         super(props);
 		
         this.state = {
-            value:'',
-            email: '',
-            password: '',
-			repeatedEmail: ''
+            value:"",
+            email: "",
+            password: "",
+			repeatedEmail: ""
         };
         this.handleChange1 = this.handleChange1.bind(this);
         this.handleChange2 = this.handleChange2.bind(this);
@@ -35,44 +35,79 @@ export default class CreateAccount extends React.Component {
     handleSubmit(event) {
         if (this.state.email == "" || this.state.password == "" ) {
             alert("Please enter your email address and password to create an account")
-			document.getElementById("create-account-form").reset();
+			// document.getElementById("create-account-form").reset();
         } 
         else if(this.state.email.indexOf("@") === -1){
             alert("Requires valid email")
-			document.getElementById("create-account-form").reset();
+			// document.getElementById("create-account-form").reset();
         }
         else if(this.state.password.length < 6){
             alert("Password needs to be at least 6 characters long")
-			document.getElementById("create-account-form").reset();
+			// document.getElementById("create-account-form").reset();
         }
 		else if(this.state.email == this.state.repeatedEmail){
 			alert("Your account has already been used")
-			document.getElementById("create-account-form").reset();
+			// document.getElementById("create-account-form").reset();
 		}
         else {
             alert("Your account has been created")
-			 this.setState({repeatedEmail: this.state.email});
+            this.setState({repeatedEmail: this.state.email});
             event.preventDefault();
-            var jsonpayload = {
-                "email": this.state.email,
-                "password": this.state.password,             
-            }
-            axios.post("http://localhost:80/restapi/problems/", jsonpayload) //need change to proper backend call
+            // event.preventDefault();
+            let payload = {"username": this.state.email,
+                "password":this.state.password}
+            axios.post("http://localhost:80/restapi/users/", payload)
                 .then(response => {
-                    console.log(response);
+                    console.log(response.data);
+                    this.onSuccessCreateAccount(this.state.email);    //username to be changed to the userid
+                    if (response.data != []) {
+                        axios.post("http://localhost:80/api-token-auth/", payload)
+                            .then(response => {
+                                localStorage.setItem("JWT-token", response.data.token)
+                                this.onSuccessLogin(this.state.email)
+                                location.href = "http://localhost:8080";
+                            })
+                            .catch(err => {
+                                console.log(err)
+                            })
+                    }
+                    else {
+                        this.onFailCreateAccount()
+                    }
                 })
-                .catch(error => {
+                .catch(function (error) {
                     console.log(error);
+                    this.onFailCreateAccount()
                 })
+
 			
 			document.getElementById("create-account-form").reset();
             //alert(this.state.field3);
-            //location.href = "http://localhost:8080";
         }
     
     }
+
+    onSuccessLogin(user) {
+        //display username somewhere
+        alert("login successful");
+        localStorage.setItem("loginInfo", "true");
+        localStorage.setItem("userLogged", user);
+        this.setState({isLoggedIn: true});
+        this.handleCloseModal();
+        this.setState({username: "", password: ""});
+        setTimeout(function () { window.location.reload(true); }, 0);
+    }
+
+    onSuccessCreateAccount(user) {
+        alert("account creation successful");
+    }
+
+    onFailCreateAccount() {
+        alert("account creation failed please use an other username or password");
+    }
+
 	
-        render()
+    render()
         {
            // console.log(this.problem);
 
