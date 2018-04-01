@@ -10,15 +10,14 @@ import Select from "react-select";
 
 import List from "../components/ProblemList.jsx";
 var sortBy = require('lodash.sortby');
-//var _ = require('underscore')._;
+var _ = require('underscore')._;
 
 
 export default class Problems extends React.Component {
-    login = this.props.location.state.login;
     state = {
         showModal: false,
         Problems: [{
-            name: "1",
+            title: "1",
             author: {
                 id: 1,
                 username: "fast",
@@ -26,44 +25,44 @@ export default class Problems extends React.Component {
             },
             description: "sk8",
             difficulty: 1,
-            good: 4,
+            rating: 4,
             id: 1
         },
 
             {
-                name: "2",
+                title: "2",
                 author: {
-                    id: 2,
-                    username: "alice",
+                    id: 1,
+                    username: "fast",
                     github_id: null,
                 },
                 description: "sk8",
                 difficulty: 2,
-                good: 3,
+                rating: 3,
                 id: 2
             },
             {
-                name: "3",
-                author:  {
-                    id: 3,
-                    username: "bob",
-                    github_id: null,
-                },
+                title: "3",
+                author: {
+                id: 1,
+                username: "fast",
+                github_id: null,
+            },
                 description: "sk8",
                 difficulty: 3,
-                good: 2,
+                rating: 2,
                 id: 3
             },
             {
-                name: "4",
+                title: "4",
                 author: {
-                    id: 3,
-                    username: "patrick",
-                    github_id: null,
-                },
+                id: 1,
+                username: "fast",
+                github_id: null,
+            },
                 description: "sk8",
                 difficulty: 4,
-                good: 1,
+                rating: 1,
                 id: 4
             }
         ].map((problem, i) => <List key={i} problem={problem}/> ),
@@ -72,7 +71,7 @@ export default class Problems extends React.Component {
     };
 
     Problems = [{
-        name: "1",
+        title: "1",
         author: {
             id: 1,
             username: "fast",
@@ -80,11 +79,11 @@ export default class Problems extends React.Component {
         },
         description: "sk8",
         difficulty: 1,
-        good: 4,
+        rating: 4,
         id: 1
     },
         {
-            name: "2",
+            title: "2",
             author: {
                 id: 2,
                 username: "alice",
@@ -92,11 +91,11 @@ export default class Problems extends React.Component {
             },
             description: "sk8",
             difficulty: 2,
-            good: 3,
+            rating: 3,
             id: 2
         },
         {
-            name: "3",
+            title: "3",
             author:  {
                 id: 3,
                 username: "bob",
@@ -104,11 +103,11 @@ export default class Problems extends React.Component {
             },
             description: "sk8",
             difficulty: 3,
-            good: 2,
+            rating: 2,
             id: 3
         },
         {
-            name: "4",
+            title: "4",
             author: {
                 id: 3,
                 username: "patrick",
@@ -116,7 +115,7 @@ export default class Problems extends React.Component {
             },
             description: "sk8",
             difficulty: 4,
-            good: 1,
+            rating: 1,
             id: 4
         }
     ];
@@ -124,13 +123,19 @@ export default class Problems extends React.Component {
     componentDidMount() {
         axios.get("http://localhost:80/restapi/problems/")
             .then(response => {
-                console.log(response);
-                this.Problems = response.data.map((ent) => {
-                    ent["difficulty"] = null;
-                    ent["good"] = null;
+                console.log(response.data);
+                let problems = response.data.map((ent) => {
+                    if (ent["difficulty"] === 0) {
+                        ent["difficulty"] = null;
+                    }
+                    if (ent["rating"] === 0) {
+                        ent["rating"] = null;
+                    }
                     return ent
-                }).map((problem, i) => <List key={i} problem={problem}/> );
-                this.setState({Problems})
+                });
+                this.Problems = problems;
+                problems = problems.map((problem, i) => <List key={i} problem={problem}/>);
+                this.setState({Problems: problems});
             })
             .catch(function (error) {
                 console.log(error);
@@ -138,29 +143,30 @@ export default class Problems extends React.Component {
     }
 
     handleChange = (selectedOption) => {
+        console.log(selectedOption);
         this.setState({ selectedOption });
         console.log(`Selected: ${selectedOption.label}`);
         this.handleFilter(selectedOption.label);
     }
 
     handleFilter(label){
-        if(label == ("Difficulty: low to high")) {
+        if(label === ("Difficulty: low to high")) {
             var sortedObj = _.sortBy(this.Problems, function (character) { return character.difficulty ; });
             const filtered = sortedObj.map((problem, i) => <List key={i} problem={problem}/> )
             this.setState({Problems: filtered});
         }
-        if(label == ("Difficulty: high to low")) {
+        if(label === ("Difficulty: high to low")) {
             var sortedObj = _.sortBy(this.Problems, function (character) { return character.difficulty ; });
             const filtered = sortedObj.reverse().map((problem, i) => <List key={i} problem={problem}/> )
             this.setState({Problems: filtered});
         }
-        if(label == ("Rating: low to high")){
-            var sortedObj = _.sortBy(this.Problems, function (character) { return character.good ; });
+        if(label === ("Rating: low to high")){
+            var sortedObj = _.sortBy(this.Problems, function (character) { return character.rating ; });
             const filtered = sortedObj.map((problem, i) => <List key={i} problem={problem}/> );
             this.setState({Problems: filtered});
         }
-        if(label == ("Rating: high to low")){
-            var sortedObj = _.sortBy(this.Problems, function (character) { return character.good ; });
+        if(label === ("Rating: high to low")){
+            var sortedObj = _.sortBy(this.Problems, function (character) { return character.rating ; });
             const filtered = sortedObj.reverse().map((problem, i) => <List key={i} problem={problem}/> );
             this.setState({Problems: filtered});
         }
@@ -207,7 +213,7 @@ export default class Problems extends React.Component {
         // console.log("hello");
         const temp = [];
             for(let problem of this.Problems){
-                if(problem.name.indexOf(this.state.searchTerm) !== -1) {
+                if(problem.title.indexOf(this.state.searchTerm) !== -1) {
                     temp.push(problem);
                 }
                 else if(problem.description.indexOf(this.state.searchTerm) !== -1) {
@@ -238,11 +244,10 @@ export default class Problems extends React.Component {
         const filtered = [];
 
         let noProblemMessage;
-        if (this.state.Problems.length == 0) {
-            
+        if (this.state.Problems.length === 0) {
+
             noProblemMessage = <h1> No problems to display </h1>;
         }
-
 
         return (
             <div>
@@ -271,12 +276,10 @@ export default class Problems extends React.Component {
                 {noProblemMessage}
 
                 <a  className={createProblemClass}></a>
-                    <Link class="btn btn-success" to="createProblem">Add Problem</Link>
+                    <Link class="btn btn-success" to={{pathname: '/createProblem', state:{ testvalue: params}}}>Add Problem</Link>
                 <div class="row">{this.state.Problems}</div>
                 <a style={{align: "top-right"}} className={createProblemClass}>
-                    <Link  class="btn btn-default"  to={{pathname: '/createProblem', state:{ testvalue: params}}} >Create New Problem</Link>
                 </a>
-
                 <div class="row">{Problems}</div>
             </div>
         );
