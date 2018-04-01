@@ -126,7 +126,6 @@ export default class Nav extends React.Component {
 
     handleCloseModal () {
         this.setState({ showModal: false });
-
         this.setState({username: "", password: ""});
     }
 
@@ -164,6 +163,7 @@ export default class Nav extends React.Component {
         const helpClass = location.pathname.match(/^\/help/) ? "active" : "";
         const problemsClass = location.pathname.match(/^\/problems/) ? "active" : "";
         const myProblemsClass = location.pathname.match(/^\/myProblems/) ? "active" : "";
+        const myProfileClass = location.pathname.match(/^\/myProfile/) ? "active" : "";
         const settingsClass = location.pathname.match(/^\/settings/) ? "active" : "";
         const createAccountClass = location.pathname.match(/^\/createAccount/) ? "active" : "";
         const resourcesClass = location.pathname.match(/^\/resources/) ? "active" : "";
@@ -191,6 +191,9 @@ export default class Nav extends React.Component {
                             </li>
                             <li className={myProblemsClass}>
                                 <Link to={{pathname: "myProblems"}} onClick={this.toggleCollapse.bind(this)}>My Problems</Link>
+                            </li>
+                            <li className={myProfileClass}>
+                                <Link to={{pathname: "myProfile", state:{login: this.state.isLoggedIn}}} onClick={this.toggleCollapse.bind(this)}>My Profile</Link>
                             </li>
                             <li className={settingsClass}>
                                 <Link to={{pathname: "settings"}} onClick={this.toggleCollapse.bind(this)}>Settings</Link>
@@ -242,7 +245,6 @@ export default class Nav extends React.Component {
                             <a className="btn -btn-action" onClick={this.handleSubmit}>Submit</a>
                             <Link className="btn -btn-action" to="createAccount" onClick={this.handleCloseModal}>Create New Account?</Link>
                         </ReactModal>
-
                     </div>
                 </div>
             </nav>
