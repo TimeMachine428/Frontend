@@ -86,11 +86,11 @@ export default class ProblemList extends React.Component{
     handleDifficulty(newDifficulty, problem){
         let jsonpayload = {
             "difficulty": newDifficulty
-        }
+        };
 
         var config = {
             headers: {Authorization: "JWT " + localStorage.getItem("JWT-token")}
-        }
+        };
         axios.patch("http://localhost:80/restapi/problems/" + problem.id + "/", jsonpayload, config)
             .then(response => {
                 console.log(response)
@@ -117,12 +117,12 @@ export default class ProblemList extends React.Component{
         console.log("remove" + problem.name);
         if(console.log !== ""){
             //alert("Are you sure you want to delete this problem?")
-            var c = confirm("Are you sure you want to delete this problem?")
+            var c = confirm("Are you sure you want to delete this problem?");
             if(c==true) {
-                alert("deleted")
+                alert("deleted");
                 var config = {
                     headers: {Authorization: "JWT " + localStorage.getItem("JWT-token")}
-                }
+                };
                 axios.delete("http://localhost:80/restapi/problems/" + problem.id + "/", config)
                     .then(response => {
                         console.log(response);
@@ -143,18 +143,24 @@ export default class ProblemList extends React.Component{
 
     render() {
         const solutionsClass = location.pathname.match(/^\/solutions/) ? "active" : "";
-
+        const completed = true;
+        //integration requires you to simply assign the boolean of whether its completed to this value
         const { problem } = this.props;
 
-        let deletebtn = null
-
-        if(true) {
+        let deletebtn = null;
+        //used to remove the delete button except for the author of the problem
+        if(problem.author === localStorage.getItem("userLogged")) {
             deletebtn = <button onClick={(e)=> this.deleteProblem(problem)} type="button" className="btn btn-default btn-sm">Delete</button>
         }
 
         return (
             <div className="col-md-4">
-                <h4>{problem.title}</h4>
+                {localStorage.getItem("loginInfo")==="true" && completed && (
+                    <h4>{problem.title} &#9989;</h4>
+                )}
+                {localStorage.getItem("loginInfo")==="true" && !completed && (
+                    <h4>{problem.title} </h4>
+                )}
                 <p>
                     by: {problem.author.username} <br/>
                     {problem.description} <br/>
@@ -167,7 +173,6 @@ export default class ProblemList extends React.Component{
                     <Link className="btn btn-success" to={{pathname: "/solutions", state:{ testvalue: problem}}}  >Solve</Link>
                     {deletebtn}
                 </a>
-
 
                 <ReactModal
                     style={{
