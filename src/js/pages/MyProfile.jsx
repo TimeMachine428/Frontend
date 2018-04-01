@@ -82,6 +82,9 @@ export default class MyProfile extends React.Component {
         return (
             <div>
                 <h1>My Profile</h1>
+				<h2>Hello {this.state.username} !</h2>
+				<h3>Welcome to TimeMachine, where you can learn how to code.</h3>
+				<h4>This is your profile page.</h4>
                     <p>
                         <a class="btn btn-danger" onClick={this.handleDelete}>Delete my account</a>
                     </p>
