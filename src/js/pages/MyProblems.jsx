@@ -9,7 +9,7 @@ axios.defaults.xsrfCookieName = "csrftoken";
 
 export default class MyProblems extends React.Component {
 
-    login = this.props.location.state.login;
+    //login = this.props.location.state.login;
     username = localStorage.getItem("userLogged");
     state = {
         showModal: false,
