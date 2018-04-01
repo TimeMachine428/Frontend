@@ -166,6 +166,7 @@ export default class Nav extends React.Component {
         const myProblemsClass = location.pathname.match(/^\/myProblems/) ? "active" : "";
         const settingsClass = location.pathname.match(/^\/settings/) ? "active" : "";
         const createAccountClass = location.pathname.match(/^\/createAccount/) ? "active" : "";
+        const resourcesClass = location.pathname.match(/^\/resources/) ? "active" : "";
         const navClass = collapsed ? "collapse" : "";
 
         return (
@@ -196,6 +197,9 @@ export default class Nav extends React.Component {
                             </li>
                             <li className={helpClass}>
                                 <Link to="help" onClick={this.toggleCollapse.bind(this)}>Help</Link>
+                            </li>
+                            <li className={resourcesClass}>
+                                <Link to="resources" onClick={this.toggleCollapse.bind(this)}>Resources</Link>
                             </li>
                             {!this.state.isLoggedIn && (
                                 <li className={createAccountClass}>

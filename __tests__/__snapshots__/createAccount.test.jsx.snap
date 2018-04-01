@@ -5,7 +5,9 @@ exports[`CreateAccount page information correct 1`] = `
   <h2>
      Sign up with your email address 
   </h2>
-  <form>
+  <form
+    id="create-account-form"
+  >
     <p>
       Email address
     </p>
