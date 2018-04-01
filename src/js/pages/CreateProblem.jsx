@@ -1,22 +1,26 @@
 import React from "react"
 import Textarea from "react-textarea-autosize"
 import { Link } from 'react-router'
+import {Route, Redirect, hashHistory } from 'react-router'
 import axios from "axios/index";
 import { createHashHistory } from 'history'
 
 export default class CreateProblem extends React.Component {
 
     problem = this.props;
+    editProblem;
 
     constructor(props) {
         super(props);
+        this.editProblem= this.props.location.state.testvalue;
+        console.log(this.editProblem);
 
         this.state = {
-            value:'',
-            field1: '',
-            field2: '',
-            field3:'',
-            field4: '',
+            value: '',
+            field1: this.editProblem.title,
+            field2: this.editProblem.title,
+            field3: this.editProblem.difficulty,
+            field4: this.editProblem.description,
             field5:'',
             redirect: null
         };
@@ -79,33 +83,45 @@ export default class CreateProblem extends React.Component {
                     console.log(response);
                     // const history = createHashHistory()
                     // location.href = "http://localhost:8080/#/problems/"
-                    // this.setState({redirect: <Link to={{pathname: "problems", state:{login: this.state.isLoggedIn}}}></Link>})
+                    //this.setState({redirect: <Link to={{pathname: "problems", state:{login: this.state.isLoggedIn}}}></Link>})
+                    this.setState({ redirect: true })
                 })
                 .catch(error => {
                     console.log(error);
+                    this.setState({ redirect: true })
+
                 })
 
             //alert(this.state.field3);
+            //this.props.history.push('/');
+            //hashHistory.push('/myProblems')
+            location.href = "http://localhost:8080";
+
         }
     }
         render()
         {
             console.log(this.problem);
+            console.log(this.state.redirect)
+
+           /* if(this.state.redirect){
+                return <Link to={{pathname: "myProblems", state:{login: this.state.isLoggedIn}}}/>
+            }*/
 
             return (
                 <div>
 
                     <form>
                         <p>Enter the title of the problem in the box below</p>
-                        <p><input type="text" onChange={this.handleChange1}/></p>
+                        <p><input defaultValue={this.editProblem.title} type="text" onChange={this.handleChange1}/></p>
                         <p>Enter the problem type below</p>
-                        <p><input type="text" onChange={this.handleChange2}/></p>
+                        <p><input defaultValue={this.editProblem.title} type="text" onChange={this.handleChange2}/></p>
                         <p>Enter the estimated difficulty level on a scale from 1-5</p>
-                        <p><input type="text" onChange={this.handleChange3}/></p>
+                        <p><input defaultValue={this.editProblem.difficulty} type="text" onChange={this.handleChange3}/></p>
                         <p>Enter your problem in the box below</p>
-                        <p><Textarea style={{width: 300, height: 300}} onChange={this.handleChange4}/></p>
+                        <p><Textarea defaultValue={this.editProblem.description} style={{width: 300, height: 300}} onChange={this.handleChange4}/></p>
                         <p>Enter your solution to the problem</p>
-                        <p><Textarea style={{width: 300, height: 300}} onChange={this.handleChange5}/></p>
+                        <p><Textarea defaultValue={this.editProblem.solution} style={{width: 300, height: 300}} onChange={this.handleChange5}/></p>
                         <a class="btn btn-default" onClick={this.handleSubmit}>Submit</a>
                         {/*{this.state.redirect}*/}
                         <h1>{this.problem.name}</h1>

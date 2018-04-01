@@ -164,7 +164,7 @@ export default class ProblemList extends React.Component{
 
         if(this.state.onMyProblem) {
             deletebtn = <button onClick={(e)=> this.deleteProblem(problem)} type="button" className="btn btn-default btn-sm">Delete</button>;
-            editbtn = <button onClick={this.editProblem.bind(this, problem)}type="button" className="btn btn-default btn-sm"> Edit </button>;
+            editbtn = <Link to={{pathname: "/createProblem", state:{ testvalue: problem}}}  type="button" className="btn btn-default btn-sm"> Edit </Link>;
         }
 
         return (
