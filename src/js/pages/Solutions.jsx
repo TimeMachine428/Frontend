@@ -6,7 +6,7 @@ export default class Solutions extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {value: ''};
+        this.state = {value: ""};
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -50,11 +50,11 @@ export default class Solutions extends React.Component {
     render() {
         return(
             <div>
-              <h1>{this.problem.name}</h1>
+                <h1>{this.problem.name}</h1>
                 <p>{this.problem.description}</p>
                 <p>Enter solution in the box below</p>
                 <Textarea style = {{width:900, height: 300}} onChange={this.handleChange}/>
-                <a class="btn -btn-default" onClick={this.handleSubmit}>Submit</a>
+                <a className="btn -btn-default" onClick={this.handleSubmit}>Submit</a>
                 <button onClick={this.onFeedback1}>Success Demo</button>
                 <button onClick={this.onFeedback2}>Fail Demo</button>
                 <button onClick={this.saveProgress}>Save Progress</button>

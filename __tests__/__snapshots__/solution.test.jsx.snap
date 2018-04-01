@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Solution page renders correct information 1`] = `
+<div>
+    <h1>
+        {this.problem.name}
+    </h1>
+    <p>
+        {this.problem.description}
+    </p>
+    <p>
+        Enter solution in the box below
+    </p>
+    <
+        Textarea style = {{width:900, height: 300}}
+        onChange={[Function]}
+    />
+    <a
+        className="btn -btn-default"
+        onClick={[Function}}
+    >
+        Submit
+    </a>
+    <button
+        onClick={[Function]}
+    >
+        Success Demo
+    </button>
+    <button
+        onClick={[Function}]}
+    >Fail Demo
+    </button>
+    <button
+        onClick={[Function]}
+    >
+        Save Progress
+    </button>
+</div>
+`;
