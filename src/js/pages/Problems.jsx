@@ -14,7 +14,6 @@ var _ = require('underscore')._;
 
 
 export default class Problems extends React.Component {
-    login = this.props.location.state.login;
     state = {
         showModal: false,
         Problems: [{
@@ -133,11 +132,10 @@ export default class Problems extends React.Component {
                         ent["rating"] = null;
                     }
                     return ent
-                })
-                this.Problems = problems
+                });
+                this.Problems = problems;
                 problems = problems.map((problem, i) => <List key={i} problem={problem}/>);
-                this.setState({Problems: problems})
-
+                this.setState({Problems: problems});
             })
             .catch(function (error) {
                 console.log(error);
@@ -152,22 +150,22 @@ export default class Problems extends React.Component {
     }
 
     handleFilter(label){
-        if(label == ("Difficulty: low to high")) {
+        if(label === ("Difficulty: low to high")) {
             var sortedObj = _.sortBy(this.Problems, function (character) { return character.difficulty ; });
             const filtered = sortedObj.map((problem, i) => <List key={i} problem={problem}/> )
             this.setState({Problems: filtered});
         }
-        if(label == ("Difficulty: high to low")) {
+        if(label === ("Difficulty: high to low")) {
             var sortedObj = _.sortBy(this.Problems, function (character) { return character.difficulty ; });
             const filtered = sortedObj.reverse().map((problem, i) => <List key={i} problem={problem}/> )
             this.setState({Problems: filtered});
         }
-        if(label == ("Rating: low to high")){
+        if(label === ("Rating: low to high")){
             var sortedObj = _.sortBy(this.Problems, function (character) { return character.rating ; });
             const filtered = sortedObj.map((problem, i) => <List key={i} problem={problem}/> );
             this.setState({Problems: filtered});
         }
-        if(label == ("Rating: high to low")){
+        if(label === ("Rating: high to low")){
             var sortedObj = _.sortBy(this.Problems, function (character) { return character.rating ; });
             const filtered = sortedObj.reverse().map((problem, i) => <List key={i} problem={problem}/> );
             this.setState({Problems: filtered});
@@ -246,7 +244,7 @@ export default class Problems extends React.Component {
         const filtered = [];
 
         let noProblemMessage;
-        if (this.state.Problems.length == 0) {
+        if (this.state.Problems.length === 0) {
 
             noProblemMessage = <h1> No problems to display </h1>;
         }

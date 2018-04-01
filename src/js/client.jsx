@@ -13,6 +13,7 @@ import MyProblems from "./pages/MyProblems.jsx";
 import CreateAccount from "./pages/CreateAccount.jsx";
 import Resources from "./pages/Resources.jsx";
 import TermsConditions from "./pages/TermsConditions.jsx"
+import LoginPrompt from "./pages/LoginPrompt.jsx";
 
 const app = document.getElementById("app");
 
@@ -29,6 +30,7 @@ ReactDOM.render(
       <Route path="createAccount(/:testvalue)" name="createAccount" component={CreateAccount}/>
       <Route path="resources" name="resources" component={Resources} />
       <Route path="termsConditions" name="termsConditions" component={TermsConditions}/>
+      <Route path="loginPrompt" name="loginPrompt" component={LoginPrompt}/>
     </Route>
   </Router>,
   app
