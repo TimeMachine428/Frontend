@@ -15,7 +15,8 @@ export default class ProblemList extends React.Component{
             showModal: false,
             value:"",
             rating: "",
-            difficulty: ""
+            difficulty: "",
+            completed: false
         };
 
         this.handleOpenModal = this.handleOpenModal.bind(this);
@@ -23,6 +24,7 @@ export default class ProblemList extends React.Component{
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleRating = this.handleRating.bind(this);
+        this.check = this.check.bind(this);
     }
 
     handleOpenModal () {
@@ -109,6 +111,10 @@ export default class ProblemList extends React.Component{
     }
 
     componentDidMount() {
+        const { problem } = this.props;
+
+        this.check(problem.id);
+
         // this.getDifficulty(problem.id)
         // this.getRating(problem.id)
     }
@@ -140,12 +146,60 @@ export default class ProblemList extends React.Component{
         }
     }
 
+    check(problemID) {
+        axios.get("http://localhost:80/restapi/problems/" + problemID + "/solutions/")
+            .then(response => {
+                // console.log(response.data[1]);
+                var length = response.data.length;
+                for (var i=0; i< length; i++){
+                    // console.log(response.data[i].author.username);
+                    // console.log(localStorage.getItem("userLogged"));
+                    if (response.data[i].author.username === localStorage.getItem("userLogged")) {
+                        // console.log('same user');
+                        // console.log(response.data[i].jobs[0].success);
+                        if (response.data[i].jobs[0].success) {
+                            // console.log('success');
+                            this.setState({completed: true});
+                        }
+                    }
+                }
+                // return false;
+                })
+            .catch(function (error) {
+                console.log(error);
+            })
+    }
+
 
     render() {
         const solutionsClass = location.pathname.match(/^\/solutions/) ? "active" : "";
-        const completed = true;
         //integration requires you to simply assign the boolean of whether its completed to this value
         const { problem } = this.props;
+        const completed = this.state.completed;
+        // console.log(completed);
+
+        // console.log(problem.id);
+        // axios.get("http://localhost:80/restapi/problems/" + problem.id + "/solutions/")
+        //     .then(response => {
+        //         // console.log(response.data[1]);
+        //         var length = response.data.length;
+        //         for (var i=0; i< length; i++){
+        //             // console.log(response.data[i].author.username);
+        //             // console.log(localStorage.getItem("userLogged"));
+        //             if (response.data[i].author.username === localStorage.getItem("userLogged")) {
+        //                 console.log('same user');
+        //                 // console.log(response.data[i].jobs[0].success);
+        //                 if (response.data[i].jobs[0].success) {
+        //                     console.log('true');
+        //                     completed = true;
+        //                 }
+        //             }
+        //         }
+        //         })
+        //     .catch(function (error) {
+        //         console.log(error);
+        //     })
+
 
         let deletebtn = null;
         //used to remove the delete button except for the author of the problem
