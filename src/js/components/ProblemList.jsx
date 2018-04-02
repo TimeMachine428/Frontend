@@ -16,7 +16,10 @@ export default class ProblemList extends React.Component {
             value: "",
             rating: "",
             difficulty: "",
-            onMyProblem: false
+            onMyProblem: false,
+            completed: false,
+            continue: false,
+            load: ""
         };
 
         this.handleOpenModal = this.handleOpenModal.bind(this);
@@ -24,6 +27,7 @@ export default class ProblemList extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleRating = this.handleRating.bind(this);
+        this.check = this.check.bind(this);
     }
 
     handleOpenModal() {
@@ -113,6 +117,12 @@ export default class ProblemList extends React.Component {
     }
 
     componentDidMount() {
+        const { problem } = this.props;
+        this.continue(problem.id);
+
+        this.check(problem.id);
+        console.log(problem.id);
+
         // this.getDifficulty(problem.id)
         // this.getRating(problem.id)
     }
@@ -150,22 +160,73 @@ export default class ProblemList extends React.Component {
         this.props.editProblem(problem)
     }
 
-    checkMyProblem() {
 
+    check(problemID) {
+        axios.get("http://localhost:80/restapi/problems/" + problemID + "/solutions/")
+            .then(response => {
+                // console.log(response.data[1]);
+                var length = response.data.length;
+                for (var i=0; i< length; i++){
+                    // console.log(response.data[i].author.username);
+                    // console.log(localStorage.getItem("userLogged"));
+                    if (response.data[i].author.username === localStorage.getItem("userLogged")) {
+                        // console.log('same user');
+                        // console.log(response.data[i].jobs[0].success);
+                        if (response.data[i].jobs[0].success) {
+                            // console.log('success');
+                            this.setState({completed: true});
+                        }
+                    }
+                }
+                // return false;
+                })
+            .catch(function (error) {
+                console.log(error);
+            })
+    }
+
+    continue(problemID){
+        axios.get("http://localhost:80/restapi/problems/" + problemID + "/partial-solutions/")
+            .then(response => {
+                // console.log(response.data[1]);
+                var length = response.data.length;
+                    for (var i = 0; i < length; i++) {
+
+                            // console.log(response.data[i].author.username);
+                        // console.log(localStorage.getItem("userLogged"));
+                        if (response.data[i].author.username === localStorage.getItem("userLogged")) {
+                            if (response.data[i].code != "" && response.data[i].id == problemID) {
+
+                                this.setState({continue: true});
+                                this.setState({load: response.data[i].code});
+
+                        }
+                    }
+                }
+                // return false;
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
     }
 
 
     render() {
 
         const solutionsClass = location.pathname.match(/^\/solutions/) ? "active" : "";
-        const completed = true;
         //integration requires you to simply assign the boolean of whether its completed to this value
-        const {problem} = this.props;
+        const { problem } = this.props;
+        const completed = this.state.completed;
+        const continueProblem = this.state.continue;
+
+
 
         let deletebtn = null;
         let editbtn = null;
+
         this.state.onMyProblem = localStorage.getItem("OnMyProblem");
-        console.log(this.state.onMyProblem);
+        console.log("0" + this.state.continue);
+        console.log("1 " + this.state.load);
 
 
         if (this.state.onMyProblem) {
@@ -178,6 +239,7 @@ export default class ProblemList extends React.Component {
                         deletebtn = <button onClick={(e)=> this.deleteProblem(problem)} type="button" className="btn btn-default btn-sm">Delete</button>
                     }*/
         }
+
             return (
                 <div className="col-md-4">
                     {localStorage.getItem("loginInfo") === "true" && completed && (
@@ -203,6 +265,10 @@ export default class ProblemList extends React.Component {
                               to={{pathname: "/solutions", state: {testvalue: problem}}}>Solve</Link>
                         {editbtn}
                         {deletebtn}
+                        {localStorage.getItem("loginInfo") === "true" && !this.state.onMyProblem && continueProblem && (
+                            <Link to={{pathname: "/solutions", state: {testvalue: problem, solution: this.state.load}}} type="button"
+                                  className="btn btn-default btn-sm"> Continue </Link>
+                        )}
                     </a>
 
                     <ReactModal
