@@ -20,11 +20,17 @@ export default class Solutions extends React.Component {
         this.onFeedback1 = this.onFeedback1.bind(this);
         this.onFeedback2 = this.onFeedback2.bind(this);
         this.saveProgress = this.saveProgress.bind(this);
+        this.componentDidMount = this.componentDidMount.bind(this);
     }
 
     handleChange(event) {
-        this.setState({value: event.target.value});
+        event.preventDefault();
+
+        const newState = {...this.state};
+        newState.value = event.target.value;
+        this.setState(newState);
     }
+
 
     onFeedback1() {
         alert("Good Job! you Completed the Problem");
@@ -88,7 +94,6 @@ export default class Solutions extends React.Component {
             alert(this.state.value);
             const solution = {
                 code: this.state.value,
-                language: "python",
             };
             const config = {
                 headers: {Authorization: "JWT " + localStorage.getItem("JWT-token")}
@@ -107,6 +112,23 @@ export default class Solutions extends React.Component {
         event.preventDefault();
     }
 
+    componentDidMount() {
+        // Try reloading it
+        const config = {
+            headers: {Authorization: "JWT " + localStorage.getItem("JWT-token")}
+        };
+
+        axios.get("http://localhost/restapi/problems/" + this.problem.id + "/partial-solutions/", config)
+            .then(response => {
+                if (response.data.length > 0) {
+                    const newState = {...this.state};
+                    newState.value = response.data[0].code;
+                    this.setState(newState);
+                }
+            })
+
+    }
+
     render() {
         const testCaseList = this.state.showTestCases ? (
             <TestCaseList testcases={this.state.testcases}/>
@@ -119,8 +141,8 @@ export default class Solutions extends React.Component {
               <h1>{this.problem.name}</h1>
                 <p>{this.problem.description}</p>
                 <p>Enter solution in the box below</p>
-                <Textarea style = {{width:900, height: 300}} defaultValue={this.props.location.state.solution} onChange={this.handleChange}/>
-                <button onClick={this.saveProgress}>Save Progress</button>
+                <Textarea style = {{width:900, height: 300}} value={this.state.value} onChange={this.handleChange}/>
+                <button className="btn btn-default" onClick={this.saveProgress}>Save Progress</button>
 
                 <a className="btn btn-default" onClick={this.handleSubmit}>Submit</a>
                 {testCaseList}
