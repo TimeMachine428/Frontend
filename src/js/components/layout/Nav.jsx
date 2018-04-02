@@ -46,7 +46,7 @@ export default class Nav extends React.Component {
 
             if(localStorage.getItem("time")) {
                 const time = parseInt(localStorage.getItem("time"));
-                if((new Date().getTime() - time) > 1000*30) {  //1000 ms = 1s, 60s = 1min, 60min = 1hour...
+                if((new Date().getTime() - time) > 1000*60*60*24) {  //1000 ms = 1s, 60s = 1min, 60min = 1hour...
                     localStorage.setItem("userLogged", "");
                     return false
                 }
