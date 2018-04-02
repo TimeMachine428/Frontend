@@ -9,7 +9,6 @@ axios.defaults.xsrfCookieName = "csrftoken";
 
 export default class MyProblems extends React.Component {
 
-    //login = this.props.location.state.login;
     username = localStorage.getItem("userLogged");
     state = {
         showModal: false,
@@ -133,6 +132,8 @@ export default class MyProblems extends React.Component {
 
     componentDidMount() {
 
+
+
         axios.get("http://localhost:80/restapi/problems/")
             .then(response => {
                 console.log(response.data);
@@ -154,8 +155,15 @@ export default class MyProblems extends React.Component {
         console.log(this.username);
     }
 
+    componentWillUnmount () {
+        localStorage.removeItem('OnMyProblem');
+
+    }
 
     render() {
+
+        localStorage.setItem('OnMyProblem', true);
+
 
         let noProblemMessage;
         if (this.state.Problems.length == 0) {

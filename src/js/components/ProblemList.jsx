@@ -7,15 +7,16 @@ import axios from "axios";
 
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 axios.defaults.xsrfCookieName = "csrftoken";
-export default class ProblemList extends React.Component{
+export default class ProblemList extends React.Component {
 
-    constructor () {
+    constructor() {
         super();
         this.state = {
             showModal: false,
-            value:"",
+            value: "",
             rating: "",
-            difficulty: ""
+            difficulty: "",
+            onMyProblem: false
         };
 
         this.handleOpenModal = this.handleOpenModal.bind(this);
@@ -25,16 +26,17 @@ export default class ProblemList extends React.Component{
         this.handleRating = this.handleRating.bind(this);
     }
 
-    handleOpenModal () {
-        this.setState({ showModal: true });
+    handleOpenModal() {
+        this.setState({showModal: true});
     }
 
-    handleCloseModal () {
-        this.setState({ showModal: false });
+    handleCloseModal() {
+        this.setState({showModal: false});
         this.setState({value: ""});
         //insert backend code
 
     }
+
     handleChange(event) {
         this.setState({value: event.target.value});
     }
@@ -53,7 +55,9 @@ export default class ProblemList extends React.Component{
         axios.patch("http://localhost:80/restapi/problems/" + problem.id + "/", jsonpayload, config)
             .then(response => {
                 console.log(response)
-                setTimeout(function () { window.location.reload(true); }, 0);
+                setTimeout(function () {
+                    window.location.reload(true);
+                }, 0);
             })
             .catch(function (error) {
                 console.log(error);
@@ -63,34 +67,34 @@ export default class ProblemList extends React.Component{
         this.setState({value: ""});
     }
 
-    getDifficulty(problemID){
+    getDifficulty(problemID) {
         axios.get("http://localhost:80/restapi/problems/" + problemID + "/")
             .then(response => {
-                this.setState({difficulty:response.data["difficulty"]})
+                this.setState({difficulty: response.data["difficulty"]})
             })
             .catch(function (error) {
                 console.log(error);
             })
     }
 
-    getRating(problemID){
+    getRating(problemID) {
         axios.get("http://localhost:80/restapi/problems/" + problemID + "/")
             .then(response => {
-                this.setState({rating:response.data["rating"]})
+                this.setState({rating: response.data["rating"]})
             })
             .catch(function (error) {
                 console.log(error);
             })
     }
 
-    handleDifficulty(newDifficulty, problem){
+    handleDifficulty(newDifficulty, problem) {
         let jsonpayload = {
             "difficulty": newDifficulty
-        }
+        };
 
         var config = {
             headers: {Authorization: "JWT " + localStorage.getItem("JWT-token")}
-        }
+        };
         axios.patch("http://localhost:80/restapi/problems/" + problem.id + "/", jsonpayload, config)
             .then(response => {
                 console.log(response)
@@ -102,7 +106,7 @@ export default class ProblemList extends React.Component{
             })
     }
 
-    handleRating(newRating){
+    handleRating(newRating) {
         this.setState({rating: newRating});
         this.handleOpenModal();
 
@@ -113,26 +117,28 @@ export default class ProblemList extends React.Component{
         // this.getRating(problem.id)
     }
 
-    deleteProblem(problem){
+    deleteProblem(problem) {
         console.log("remove" + problem.name);
-        if(console.log !== ""){
+        if (console.log !== "") {
             //alert("Are you sure you want to delete this problem?")
-            var c = confirm("Are you sure you want to delete this problem?")
-            if(c==true) {
-                alert("deleted")
+            var c = confirm("Are you sure you want to delete this problem?");
+            if (c == true) {
+                alert("deleted");
                 var config = {
                     headers: {Authorization: "JWT " + localStorage.getItem("JWT-token")}
-                }
+                };
                 axios.delete("http://localhost:80/restapi/problems/" + problem.id + "/", config)
                     .then(response => {
                         console.log(response);
-                        setTimeout(function () { window.location.reload(true); }, 0);
+                        setTimeout(function () {
+                            window.location.reload(true);
+                        }, 0);
                     })
                     .catch(error => {
                         console.log(error);
                     })
             }
-            else{
+            else {
                 alert("cancelled")
             }
 
@@ -140,66 +146,86 @@ export default class ProblemList extends React.Component{
         }
     }
 
-    editProblem(problem){
+    editProblem(problem) {
         this.props.editProblem(problem)
+    }
+
+    checkMyProblem() {
+
     }
 
 
     render() {
+
         const solutionsClass = location.pathname.match(/^\/solutions/) ? "active" : "";
+        const completed = true;
+        //integration requires you to simply assign the boolean of whether its completed to this value
+        const {problem} = this.props;
 
-        const { problem } = this.props;
+        let deletebtn = null;
+        let editbtn = null;
+        this.state.onMyProblem = localStorage.getItem("OnMyProblem");
+        console.log(this.state.onMyProblem);
 
-        let deletebtn = null
 
-        if(true) {
-            deletebtn = <button onClick={(e)=> this.deleteProblem(problem)} type="button" className="btn btn-default btn-sm">Delete</button>
+        if (this.state.onMyProblem) {
+            deletebtn = <button onClick={(e) => this.deleteProblem(problem)} type="button"
+                                className="btn btn-default btn-sm">Delete</button>;
+            editbtn = <Link to={{pathname: "/createProblem", state: {testvalue: problem}}} type="button"
+                            className="btn btn-default btn-sm"> Edit </Link>;
+            /*        //used to remove the delete button except for the author of the problem
+                    if(problem.author === localStorage.getItem("userLogged")) {
+                        deletebtn = <button onClick={(e)=> this.deleteProblem(problem)} type="button" className="btn btn-default btn-sm">Delete</button>
+                    }*/
         }
+            return (
+                <div className="col-md-4">
+                    {localStorage.getItem("loginInfo") === "true" && completed && (
+                        <h4>{problem.title} &#9989;</h4>
+                    )}
+                    {localStorage.getItem("loginInfo") === "true" && !completed && (
+                        <h4>{problem.title} </h4>
+                    )}
+                    <p>
+                        by: {problem.author.username} <br/>
+                        {problem.description} <br/>
+                    </p>
+                    <p id="diff">difficulty: </p>
+                    <ReactStars count={5} value={problem.difficulty} onChange={(newValue) => {
+                        this.handleDifficulty(newValue, problem)
+                    }} size={24} half={false} color2={"#fffe2b"}/>
+                    <p id="rev">reviews: </p>
+                    <ReactStars count={5} value={problem.rating} onChange={(newValue) => {
+                        this.handleRating(newValue)
+                    }} size={24} half={false} color2={"#fffe2b"}/>
+                    <a className={solutionsClass}>
+                        <Link className="btn btn-success"
+                              to={{pathname: "/solutions", state: {testvalue: problem}}}>Solve</Link>
+                        {editbtn}
+                        {deletebtn}
+                    </a>
 
-        return (
-            <div className="col-md-4">
-                <h4>{problem.title}</h4>
-                <p>
-                    by: {problem.author.username} <br/>
-                    {problem.description} <br/>
-                </p>
-                <p id = "diff">difficulty: </p>
-                <ReactStars count={5} value={problem.difficulty} onChange = {(newValue) => {this.handleDifficulty(newValue, problem)}} size={24} half={false} color2={"#fffe2b"}/>
-                <p id = "rev">reviews: </p>
-                <ReactStars count={5} value={problem.rating} onChange = {(newValue) => {this.handleRating(newValue)}} size={24} half={false} color2={"#fffe2b"}/>
-                <a  className={solutionsClass}>
-                    <Link className="btn btn-success" to={{pathname: "/solutions", state:{ testvalue: problem}}}  >Solve</Link>
-                    <button onClick={this.editProblem.bind(this, problem)}type="button" className="btn btn-default btn-sm"> Edit </button>
-
-
-
-
-
-
-
-                    {deletebtn}
-                </a>
-
-
-                <ReactModal
-                    style={{
-                        overlay:{
-                            left: "25%",
-                            right: "25%",
-                            top: "90px",
-                            height: "600px",
-                            width: "600px"
-                        }
-                    }}
-                    isOpen={this.state.showModal}
-                    contentLabel="Minimal Modal Example">
-                    <button onClick={this.handleCloseModal}>Close</button>
-                    <h1>Leave a comment (optional)</h1>
-                    <Textarea style = {{width:400, height: 300}} onChange={this.handleChange}/>
-                    <a className="btn -btn-default" onClick={(e) => {this.handleSubmit(e, problem)}}>Submit</a>
-                </ReactModal>
-            </div>
-        );
-    }
+                    <ReactModal
+                        style={{
+                            overlay: {
+                                left: "25%",
+                                right: "25%",
+                                top: "90px",
+                                height: "600px",
+                                width: "600px"
+                            }
+                        }}
+                        isOpen={this.state.showModal}
+                        contentLabel="Minimal Modal Example">
+                        <button onClick={this.handleCloseModal}>Close</button>
+                        <h1>Leave a comment (optional)</h1>
+                        <Textarea style={{width: 400, height: 300}} onChange={this.handleChange}/>
+                        <a className="btn -btn-default" onClick={(e) => {
+                            this.handleSubmit(e, problem)
+                        }}>Submit</a>
+                    </ReactModal>
+                </div>
+            );
+        }
 
 }
