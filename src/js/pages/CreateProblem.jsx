@@ -1,6 +1,7 @@
 import React from "react"
 import Textarea from "react-textarea-autosize"
-import {Route, Redirect, hashHistory, Link} from 'react-router'
+import {Link} from 'react-router'
+import {Route, Redirect, hashHistory} from 'react-router'
 import axios from "axios/index";
 import {createHashHistory} from 'history'
 import PropTypes from "prop-types";
@@ -18,7 +19,7 @@ export default class CreateProblem extends React.Component {
         this.state = {
             value: '',
             title: this.editProblem.title,
-            type: this.editProblem.type,
+            type: this.editProblem.title,
             difficulty: this.editProblem.difficulty,
             description: this.editProblem.description,
             testCases: [],
@@ -81,7 +82,10 @@ export default class CreateProblem extends React.Component {
     }
 
     handleSubmit(event) {
+        const {router} = this.context;
+
         event.preventDefault();
+
         if (this.state.title == "" || this.state.type == "" || this.state.description == "" || this.state.difficulty == "" || this.state.testCases.length == 0) {
             alert("Please Fill All Fields")
         } else {
@@ -107,6 +111,8 @@ export default class CreateProblem extends React.Component {
                     console.log(response);
                     // const history = createHashHistory()
                     // location.href = "http://localhost:8080/#/problems/"
+                    //this.setState({redirect: <Link to={{pathname: "problems", state:{login: this.state.isLoggedIn}}}></Link>})
+                    this.setState({redirect: true})
                     // this.setState({redirect: <Link to={{pathname: "problems", state:{login: this.state.isLoggedIn}}}></Link>})
 
                     const testCaseUrl = "http://localhost:80/restapi/problems/" + response.data.id + "/testcases/";
@@ -121,10 +127,21 @@ export default class CreateProblem extends React.Component {
                 })
                 .catch(error => {
                     console.log(error);
-                });
+                    this.setState({redirect: true})
+
+                })
+
+            //alert(this.state.field3);
+            //this.props.history.push('/');
+            //hashHistory.push('/myProblems')
+            //location.href = "http://localhost:8080";
+            router.push('/myProblems');
+
 
         }
     }
+
+
 
     handleTestCaseChange(event) {
         const newState = {...this.state};
