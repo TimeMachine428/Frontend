@@ -160,7 +160,6 @@ export default class ProblemList extends React.Component {
         this.props.editProblem(problem)
     }
 
-
     check(problemID) {
         axios.get("http://localhost:80/restapi/problems/" + problemID + "/solutions/")
             .then(response => {
@@ -208,6 +207,7 @@ export default class ProblemList extends React.Component {
             .catch(function (error) {
                 console.log(error);
             })
+
     }
 
 
@@ -218,7 +218,7 @@ export default class ProblemList extends React.Component {
         const { problem } = this.props;
         const completed = this.state.completed;
         const continueProblem = this.state.continue;
-
+        const currentSave = this.state.load;
 
 
         let deletebtn = null;
@@ -266,7 +266,7 @@ export default class ProblemList extends React.Component {
                         {editbtn}
                         {deletebtn}
                         {localStorage.getItem("loginInfo") === "true" && !this.state.onMyProblem && continueProblem && (
-                            <Link to={{pathname: "/solutions", state: {testvalue: problem, solution: this.state.load}}} type="button"
+                            <Link to={{pathname: "/solutions", state: {testvalue: problem, solution: currentSave}}} type="button"
                                   className="btn btn-default btn-sm"> Continue </Link>
                         )}
                     </a>

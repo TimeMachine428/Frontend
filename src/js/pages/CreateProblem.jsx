@@ -21,6 +21,7 @@ export default class CreateProblem extends React.Component {
             title: this.editProblem.title,
             type: this.editProblem.title,
             difficulty: this.editProblem.difficulty,
+            description: this.editProblem.description,
             testCases: [],
             testCase: {
                 method: "",
@@ -35,11 +36,23 @@ export default class CreateProblem extends React.Component {
         this.handleAddTestCase = this.handleAddTestCase.bind(this);
         this.handleRemoveTestCase = this.handleRemoveTestCase.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.componentDidMount = this.componentDidMount.bind(this);
+    }
 
-
+    componentDidMount() {
+        if (this.editProblem) {
+            axios.get("http://localhost:80/restapi/problems/" + this.editProblem.id + "/testcases/")
+                .then(response => {
+                    const newState = {...this.state};
+                    newState.testCases = response.data;
+                    this.setState(newState);
+                });
+        }
     }
 
     handleChange(event) {
+        event.preventDefault();
+
         const newState = {...this.state};
         newState[event.target.name] = event.target.value;
         this.setState(newState);
@@ -55,8 +68,15 @@ export default class CreateProblem extends React.Component {
 
     handleRemoveTestCase(event, i) {
         const newState = {...this.state};
-        newState.testCases.splice(i, 1);
+        const [ deleted ] = newState.testCases.splice(i, 1);
         this.setState(newState);
+
+        if (deleted.id && this.editProblem) {
+            const config = {
+                headers: {Authorization: "JWT " + localStorage.getItem("JWT-token")}
+            };
+            axios.delete("http://localhost/restapi/problems/" + this.editProblem.id + "/testcases/" + deleted.id + "/", config);
+        }
 
         event.preventDefault();
     }
@@ -78,13 +98,32 @@ export default class CreateProblem extends React.Component {
             var config = {
                 headers: {Authorization: "JWT " + localStorage.getItem("JWT-token")}
             };
-            axios.post("http://localhost:80/restapi/problems/", jsonpayload, config)
+
+            let updatePromise;
+            if (this.editProblem) {
+                updatePromise = axios.put("http://localhost/restapi/problems/" + this.editProblem.id + "/", jsonpayload, config);
+            } else {
+                updatePromise = axios.post("http://localhost/restapi/problems/", jsonpayload, config);
+            }
+
+            updatePromise
                 .then(response => {
                     console.log(response);
                     // const history = createHashHistory()
                     // location.href = "http://localhost:8080/#/problems/"
                     //this.setState({redirect: <Link to={{pathname: "problems", state:{login: this.state.isLoggedIn}}}></Link>})
                     this.setState({redirect: true})
+                    // this.setState({redirect: <Link to={{pathname: "problems", state:{login: this.state.isLoggedIn}}}></Link>})
+
+                    const testCaseUrl = "http://localhost:80/restapi/problems/" + response.data.id + "/testcases/";
+
+                    Promise.all(this.state.testCases.map(testCase => {
+                        if (!testCase.id) {
+                            return axios.post(testCaseUrl, testCase, config);
+                        }
+                    })).then(() => {
+                       alert("Problem created");
+                    });
                 })
                 .catch(error => {
                     console.log(error);
@@ -128,14 +167,13 @@ export default class CreateProblem extends React.Component {
             <div>
                 <form>
                     <p>Enter the title of the problem in the box below</p>
-                    <p><input defaultValue={this.editProblem.title} type="text" name="title" onChange={this.handleChange}/></p>
+                    <p><input type="text" name="title" onChange={this.handleChange} value={this.state.title}/></p>
                     <p>Enter the problem type below</p>
-                    <p><input defaultValue={this.editProblem.title} type="text" name="type" onChange={this.handleChange}/></p>
+                    <p><input type="text" name="type" onChange={this.handleChange} value={this.state.type}/></p>
                     <p>Enter the estimated difficulty level on a scale from 1-5</p>
-                    <p><input defaultValue={this.editProblem.difficulty} type="text" name="difficulty" onChange={this.handleChange}/></p>
+                    <p><input type="text" name="difficulty" onChange={this.handleChange} value={this.state.difficulty}/></p>
                     <p>Enter your problem in the box below</p>
-                    <p><Textarea defaultValue={this.editProblem.description} name="description" style={{width: 300, height: 300}} onChange={this.handleChange}/></p>
-
+                    <p><Textarea name="description" style={{width: 300, height: 300}} value={this.state.description} onChange={this.handleChange}/></p>
 
                     <div className="panel panel-default">
                         <div className="panel-heading">Test Cases</div>
@@ -188,9 +226,9 @@ export default class CreateProblem extends React.Component {
                 </form>
             </div>
         );
-
     }
 }
+
 CreateProblem.contextTypes = {
     router: PropTypes.object
 };

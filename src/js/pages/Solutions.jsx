@@ -119,10 +119,10 @@ export default class Solutions extends React.Component {
               <h1>{this.problem.name}</h1>
                 <p>{this.problem.description}</p>
                 <p>Enter solution in the box below</p>
-                <Textarea style = {{width:900, height: 300}} defaultValue={this.props.location.state.solution} onChange={this.handleChange}/>
-                <a class="btn -btn-default" onClick={this.handleSubmit}>Submit</a>
-                <button onClick={this.onFeedback1}>Success Demo</button>
-                <button onClick={this.onFeedback2}>Fail Demo</button>
+
+                {/*<button onClick={this.onFeedback1}>Success Demo</button>
+                <button onClick={this.onFeedback2}>Fail Demo</button>*/}
+                <Textarea style = {{width:900, height: 300}} onChange={this.handleChange}/>
                 <button onClick={this.saveProgress}>Save Progress</button>
                 <a className="btn btn-default" onClick={this.handleSubmit}>Submit</a>
                 {testCaseList}
