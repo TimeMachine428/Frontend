@@ -210,13 +210,12 @@ export default class ProblemList extends React.Component {
 
     }
 
-
     render() {
 
         const solutionsClass = location.pathname.match(/^\/solutions/) ? "active" : "";
         //integration requires you to simply assign the boolean of whether its completed to this value
         const { problem } = this.props;
-        const completed = this.state.completed;
+        const completed = problem.has_solved;
         const continueProblem = this.state.continue;
         const currentSave = this.state.load;
 

@@ -121,7 +121,11 @@ export default class Problems extends React.Component {
     ];
 
     componentDidMount() {
-        axios.get("http://localhost:80/restapi/problems/")
+        const config = {
+            headers: {Authorization: "JWT " + localStorage.getItem("JWT-token")}
+        };
+
+        axios.get("http://localhost:80/restapi/problems/", config)
             .then(response => {
                 console.log(response.data);
                 let problems = response.data.map((ent) => {
