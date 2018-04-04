@@ -40,7 +40,7 @@ export default class CreateProblem extends React.Component {
     }
 
     componentDidMount() {
-        if (this.editProblem) {
+        if (this.editProblem.id) {
             axios.get("http://localhost:80/restapi/problems/" + this.editProblem.id + "/testcases/")
                 .then(response => {
                     const newState = {...this.state};
@@ -71,7 +71,7 @@ export default class CreateProblem extends React.Component {
         const [ deleted ] = newState.testCases.splice(i, 1);
         this.setState(newState);
 
-        if (deleted.id && this.editProblem) {
+        if (deleted.id && this.editProblem.id) {
             const config = {
                 headers: {Authorization: "JWT " + localStorage.getItem("JWT-token")}
             };
@@ -100,7 +100,7 @@ export default class CreateProblem extends React.Component {
             };
 
             let updatePromise;
-            if (this.editProblem) {
+            if (this.editProblem.id) {
                 updatePromise = axios.put("http://localhost/restapi/problems/" + this.editProblem.id + "/", jsonpayload, config);
             } else {
                 updatePromise = axios.post("http://localhost/restapi/problems/", jsonpayload, config);
