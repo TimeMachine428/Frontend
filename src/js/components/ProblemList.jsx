@@ -50,23 +50,22 @@ export default class ProblemList extends React.Component {
         this.handleCloseModal();
 
         let jsonpayload = {
-            "rating": this.state.rating
-        }
+            "message": this.state.value,
+            "content": this.state.value,
+            "rating": this.state.rating,
+        };
 
         var config = {
             headers: {Authorization: "JWT " + localStorage.getItem("JWT-token")}
-        }
-        axios.patch("http://localhost:80/restapi/problems/" + problem.id + "/", jsonpayload, config)
+        };
+        axios.post("http://localhost:80/restapi/problems/" + problem.id + "/ratings/", jsonpayload, config)
             .then(response => {
-                console.log(response)
-                setTimeout(function () {
-                    window.location.reload(true);
-                }, 0);
+                console.log(response);
+                this.getRating(problem.id);
             })
             .catch(function (error) {
                 console.log(error);
-            })
-
+            });
 
         this.setState({value: ""});
     }
@@ -101,7 +100,7 @@ export default class ProblemList extends React.Component {
         };
         axios.patch("http://localhost:80/restapi/problems/" + problem.id + "/", jsonpayload, config)
             .then(response => {
-                console.log(response)
+                console.log(response);
                 // setTimeout(function () { window.location.reload(true); }, 0);
                 // return response.data["difficulty"]
             })
@@ -123,8 +122,11 @@ export default class ProblemList extends React.Component {
         this.check(problem.id);
         console.log(problem.id);
 
-        // this.getDifficulty(problem.id)
-        // this.getRating(problem.id)
+        this.setState({
+            rating: problem.rating,
+            difficulty: problem.difficulty,
+        });
+
     }
 
     deleteProblem(problem) {
@@ -252,11 +254,11 @@ export default class ProblemList extends React.Component {
                         {problem.description} <br/>
                     </p>
                     <p id="diff">difficulty: </p>
-                    <ReactStars count={5} value={problem.difficulty} onChange={(newValue) => {
+                    <ReactStars count={5} value={this.state.difficulty} onChange={(newValue) => {
                         this.handleDifficulty(newValue, problem)
                     }} size={24} half={false} color2={"#fffe2b"}/>
                     <p id="rev">reviews: </p>
-                    <ReactStars count={5} value={problem.rating} onChange={(newValue) => {
+                    <ReactStars count={5} value={this.state.rating} onChange={(newValue) => {
                         this.handleRating(newValue)
                     }} size={24} half={false} color2={"#fffe2b"}/>
                     <a className={solutionsClass}>
