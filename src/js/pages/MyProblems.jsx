@@ -12,109 +12,10 @@ export default class MyProblems extends React.Component {
     username = localStorage.getItem("userLogged");
     state = {
         showModal: false,
-        Problems: [{
-            name: "1",
-            author: {
-                id: 1,
-                username: "fast",
-                github_id: null,
-            },
-            description: "sk8",
-            difficulty: 1,
-            good: 4,
-            id: 1
-        },
-            {
-                name: "2",
-                author: {
-                    id: 2,
-                    username: "alice",
-                    github_id: null,
-                },
-                description: "sk8",
-                difficulty: 2,
-                good: 3,
-                id: 2
-            },
-            {
-                name: "3",
-                author:  {
-                    id: 3,
-                    username: "bob",
-                    github_id: null,
-                },
-                description: "sk8",
-                difficulty: 3,
-                good: 2,
-                id: 3
-            },
-            {
-                name: "4",
-                author: {
-                    id: 3,
-                    username: "patrick",
-                    github_id: null,
-                },
-                description: "sk8",
-                difficulty: 4,
-                good: 1,
-                id: 4
-            }
-        ].map((problem, i) => <List key={i} problem={problem}/>),
-
-
-
+        Problems: [],
     };
 
-    Problems = [{
-        name: "1",
-        author: {
-            id: 1,
-            username: "fast",
-            github_id: null,
-        },
-        description: "sk8",
-        difficulty: 1,
-        good: 4,
-        id: 1
-    },
-        {
-            name: "2",
-            author: {
-                id: 2,
-                username: "alice",
-                github_id: null,
-            },
-            description: "sk8",
-            difficulty: 2,
-            good: 3,
-            id: 2
-        },
-        {
-            name: "3",
-            author:  {
-                id: 3,
-                username: "bob",
-                github_id: null,
-            },
-            description: "sk8",
-            difficulty: 3,
-            good: 2,
-            id: 3
-        },
-        {
-            name: "4",
-            author: {
-                id: 3,
-                username: "patrick",
-                github_id: null,
-            },
-            description: "sk8",
-            difficulty: 4,
-            good: 1,
-            id: 4
-        }
-    ];
+    Problems = [];
 
     handleFilter(username) {
 
@@ -131,8 +32,6 @@ export default class MyProblems extends React.Component {
     }
 
     componentDidMount() {
-
-
 
         axios.get("http://localhost:80/restapi/problems/")
             .then(response => {

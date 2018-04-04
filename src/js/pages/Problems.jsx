@@ -16,109 +16,11 @@ var _ = require('underscore')._;
 export default class Problems extends React.Component {
     state = {
         showModal: false,
-        Problems: [{
-            title: "1",
-            author: {
-                id: 1,
-                username: "fast",
-                github_id: null,
-            },
-            description: "sk8",
-            difficulty: 1,
-            rating: 4,
-            id: 1
-        },
-
-            {
-                title: "2",
-                author: {
-                    id: 1,
-                    username: "fast",
-                    github_id: null,
-                },
-                description: "sk8",
-                difficulty: 2,
-                rating: 3,
-                id: 2
-            },
-            {
-                title: "3",
-                author: {
-                id: 1,
-                username: "fast",
-                github_id: null,
-            },
-                description: "sk8",
-                difficulty: 3,
-                rating: 2,
-                id: 3
-            },
-            {
-                title: "4",
-                author: {
-                id: 1,
-                username: "fast",
-                github_id: null,
-            },
-                description: "sk8",
-                difficulty: 4,
-                rating: 1,
-                id: 4
-            }
-        ].map((problem, i) => <List key={i} problem={problem}/> ),
+        Problems: [],
         selectedOption: '',
         searchTerm: '',
     };
 
-    Problems = [{
-        title: "1",
-        author: {
-            id: 1,
-            username: "fast",
-            github_id: null,
-        },
-        description: "sk8",
-        difficulty: 1,
-        rating: 4,
-        id: 1
-    },
-        {
-            title: "2",
-            author: {
-                id: 2,
-                username: "alice",
-                github_id: null,
-            },
-            description: "sk8",
-            difficulty: 2,
-            rating: 3,
-            id: 2
-        },
-        {
-            title: "3",
-            author:  {
-                id: 3,
-                username: "bob",
-                github_id: null,
-            },
-            description: "sk8",
-            difficulty: 3,
-            rating: 2,
-            id: 3
-        },
-        {
-            title: "4",
-            author: {
-                id: 3,
-                username: "patrick",
-                github_id: null,
-            },
-            description: "sk8",
-            difficulty: 4,
-            rating: 1,
-            id: 4
-        }
-    ];
 
     componentDidMount() {
         const config = {

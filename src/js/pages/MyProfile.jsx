@@ -31,7 +31,7 @@ export default class MyProfile extends React.Component {
 
     handleDelete() {
 		
-		if(comfirm("Are you sure you wish to delete your account?")==true){
+		if(confirm("Are you sure you wish to delete your account?")==true){
 			// todo: add the logout
 			//add the delete acccount
 			// console.log('handle delete');
